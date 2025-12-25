@@ -1,0 +1,359 @@
+    0 pg$="miser":nm$="27":goto62000
+    1 " m.j. lansing
+    2 " math dept msu
+    3 " e lansing, mi 48824
+    4 "
+    5 " cursor #27, aug, 1981
+    6 " copyright(c)1981 the code works
+    7 " box 550, goleta, ca. 93116
+    8 "
+   10 " as of 81 aug 23 1:25 bs
+   20 deffna(x)=ol%(pt%(x)):wd=40:poke32768,96:ifpeek(33792)<>96thenwd=80
+  200 dimr$(48),r%(48,4),om$(28),ol%(28),v$(30),o$(30),pt%(30)
+  210 em=1:pf=1:fb=1:h$(1)="what?":h$(2)="i don't understand that."
+  300 fori=0to48:forj=1to4:readr%(i,j):nextj:readr$(i):nexti
+  400 data1,0,0,0,front porch
+  401 data2,0,0,12,foyer to a large house. dust is everywhere
+  402 data3,1,0,0,great hall. suits of armor line the walls
+  403 data0,2,4,16,breakfast room. it is bright and cheery
+  404 data0,5,7,3,conservatory. through a window you see a hedge-maze
+  405 data4,6,0,0,red-walled room
+  406 data5,0,10,0,formal parlor
+  407 data0,0,8,4,green drawing room
+  408 data0,9,0,7,trophy room. animal heads line the walls
+  409 data8,0,0,10,den
+  410 data0,11,9,6,blue drawing room
+  411 data10,0,0,0,library. empty shelves line walls
+  412 data0,0,1,13,dining room
+  413 data15,0,12,0,chinese room
+  414 data0,0,0,0,$
+  415 data23,13,16,0,kitchen. it is bare
+  416 data0,0,3,15,pantry. dust covers the mahogany shelves
+  417 data0,8,0,18,game room
+  418 data21,0,17,19,smoking room. the air is stale in here
+  419 data21,0,18,20,portico. a murky pool glimmers on the south side
+  420 data21,21,19,19,hall of mirrors - a good place to reflect
+  421 data0,19,0,20,ballroom. it has a beautiful wood dance floor
+  422 data0,0,0,21,chapel. a tablet says 'drop a religous item or die!!'
+  423 data24,15,40,25,back yard
+  424 data24,23,24,24,forest
+  425 data26,0,23,0,pool area. there is a large swimming pool here
+  426 data0,25,0,0,pump house. there is pool machinery installed here
+  427 data35,0,31,28,middle of the western hallway
+  428 data0,0,27,0,west bedroom
+  429 data39,0,0,0,front balcony. there is a large road below
+  430 data0,0,0,0,$
+  431 data0,0,38,27,master bedroom. there's a huge four-poster bed
+  432 data0,36,0,0,rear balcony. below you see a hedge maze
+  433 data34,0,0,38,east bedroom
+  434 data0,33,0,0,closet
+  435 data0,27,36,0,junction of the west hallway and the north-south hallway
+  436 data32,0,37,35,center of the north-south hallway
+  437 data0,38,0,36,junction of the east hallway and the north-south hallway
+  438 data37,39,33,31,middle of the east hallway
+  439 data38,29,0,0,south end of the east hallway
+  440 data0,42,0,41,hedge maze
+  441 data44,42,0,0,hedge maze
+  442 data41,44,43,0,hedge maze
+  443 data41,23,0,0,hedge maze
+  444 data0,42,0,45,hedge maze
+  445 data0,0,44,0,hedge maze
+  446 data0,0,0,5,walk-in vault
+  447 data0,40,0,0,dungeon. there is light above and to the south
+  448 data0,0,0,0,bottom of the swimming pool. a ladder leads up and out
+  500 fori=1to30:readv$(i):nexti
+  510 dataget,take,move,slid,push,open,read,inve,quit
+  511 datadrop,say,pour,fill,unlo,look
+  512 datago,nort,n,sout,s,east,e,west,w,scor,turn,jump,swim,i,fix
+  550 fori=1to30:reado$(i),pt%(i):nexti
+  560 dataripc,17,mat,10,pape,13,buck,1,swor,9,key,20,valv,-1,ladd,-1
+  570 dataslip,19,rug,15,book,23,door,-1,cabi,-1,ritn,-1,vict,-1,orga,-1,para,14
+  580 datastai,-1,penn,12,cros,11,leaf,4,bag,5,>$<,-1,>$<,-1,ring,7,pain,8
+  590 datavaul,-1,pool,-1,xyzz,-1,plug,-1
+  600 fori=1to28:readom$(i),ol%(i):nexti:print"{clr}"
+  610 dataplastic bucket,26,vicious snake,4,charmed snake,-2,*golden leaf*,45
+  611 data*bulging moneybag*,46,>$<,-2,*diamond ring*,48
+  612 data*rare painting*,39,sword,13,mat,0,rusty cross,23,penny,28
+  613 datapiece of paper,31,parachute with no ripcord,34,oriental rug,6
+  614 datatrapdoor marked 'danger',-2
+  615 dataparachute ripcord,-2,portal in the north wall,-2
+  616 datapair of *ruby slippers*,-2,brass door key,-2
+  617 datamajestic staircase leading up,2
+  618 datamajestic staircase leading down,27,battered book,11
+  619 dataorgan in the corner,21,open organ in the corner,-2
+  620 datacabinet on rollers against one wall over,5,repaired parachute,-2
+  621 data"sign saying 'drop coins for luck'",19
+  699 goto14000
+  700 print:sc=0:sf=0:gosub60000:iflen(in$)=0then700
+  720 ifleft$(in$,1)=" "thenin$=right$(in$,len(in$)-1):goto720
+  730 ifright$(in$,1)=" "thenin$=left$(in$,len(in$)-1):goto730
+  735 sp=len(in$)+1:print
+  740 sc=sc+1:ifmid$(in$,sc,1)=" "thensf=sf+1:sp=sc
+  750 ifsc<len(in$)then740
+  760 ifsf>-1andsf<2thengoto780
+  770 print"please type a one or two word command":goto700
+  780 cv$=left$(in$,sp-1):forx=1to30:ifleft$(cv$,4)=v$(x)theni=x:goto800
+  790 nextx:goto50000
+  800 ifsf=0thenco$="":j=0:goto900
+  810 co$=mid$(in$,sp+1,4):forx=1to30:ifco$=o$(x)thenj=x:goto 900
+  820 nextx:goto 50000
+  830 goto700
+  900 onigoto1000,1000,2000,2000,2000,4000,5000,6000,7000,8000,9000,10000
+  910 oni-12goto11000,12000,14000,15000,16000,16000,17000,17000,17010,17010
+  920 oni-22goto19000,19000,20000,21000,22000,24000,6000,25000
+ 1000 ifj=0then50000
+ 1002 ifpt%(j)=-1thenprint"i am unable to do that.":goto700
+ 1005 iffna(j)=-1thenprint"you're already carrying it":goto700
+ 1010 iffna(j)<>cpthen51000
+ 1020 ol%(pt%(j))=-1:print"ok"
+ 1030 x=pt%(j):if(x>3andx<9)orx=19thenprint"you got a treasure!":gt=gt+1
+ 1040 ifj=2andol%(20)=-2thenprint"you find a door key!":ol%(20)=0
+ 1050 goto700
+ 2000 ifj=0then50000
+ 2005 ifj=13andcp=5andr%(5,3)=0then2100
+ 2010 ifpt%(j)=-1thenprint"that item stays put.":goto700
+ 2020 if(fna(j)<>cp)and(fna(j)<>-1)then51000
+ 2030 ifj=2andol%(20)=-2then1040
+ 2040 ifj=10andol%(16)=-2then2200
+ 2050 print"moving it reveals nothing."
+ 2060 goto700
+ 2100 print"behind the cabinet is a vault!"
+ 2110 fv=1:goto699
+ 2200 print"you find a trap door!"
+ 2210 ol%(16)=6:goto699
+ 4000 ifj=0then50000
+ 4002 ifj<>11then4030
+ 4005 if(fna(j)<>cp)and(fna(j)<>-1)then4030
+ 4010 in$="scrawled in blood on the inside front cover is the message,"
+ 4011 gosub53000:print
+ 4020 print"''victory' is a prize-winning word'.":goto700
+ 4030 ifj=7thenprint"try turning it.":goto700
+ 4040 ifj<>12then4120
+ 4050 ifcp=0anddu=0thenprint"sorry, the door is locked.":goto700
+ 4060 ifcp=0andduthenprint"it's already open.":goto700
+ 4070 ifcp<>6then51000
+ 4080 in$="you open the door. you lean over to peer in, and you fall in!"
+ 4090 gosub53000:cp=47:print:goto699
+ 4120 ifj<>13then4160
+ 4130 ifol%(26)<>cpthen51000
+ 4140 print"the cabinet is empty and dusty."
+ 4150 in$="scribbled in dust on one shelf are the words, 'behind me'."
+ 4155 gosub53000:print:goto700
+ 4160 ifj<>22then4190
+ 4170 iffna(j)<>cpandfna(j)<>-1then51000
+ 4180 print"the bag is knotted securely.":print"it won't open.":goto700
+ 4190 ifj<>27then4230
+ 4200 ifcp<>5orfv=0then51000
+ 4210 ifvothenprint"it's already open.":goto700
+ 4220 print"i can't, it's locked.":goto700
+ 4230 ifj<>16thenprint"i don't know how to open that.":goto700
+ 4232 ifcp<>21then51000
+ 4235 ifgg=0thenprint"it's stuck shut.":goto700
+ 4240 ifol%(24)=-2thenprint"it's already open.":goto700
+ 4250 print"as you open it, several objects":print"suddenly appear!"
+ 4260 ol%(24)=-2:ol%(25)=21:ol%(19)=21:ol%(17)=21:goto699
+ 5000 ifj=0then50000
+ 5005 ifpt%(j)>-1theniffna(j)<>cpandfna(j)<>-1then51000
+ 5010 ifpt%(j)=-1thenprint"there's nothing written on that.":goto700
+ 5020 ifj<>3andj<>11thenprint"there's nothing written on that.":goto700
+ 5030 ifj=11thenprint"the front cover is inscribed in greek.":goto700
+ 5040 print"it says, '12-35-6'.":print"hmm.. looks like a combination."
+ 5050 kc=1:goto700
+ 6000 print"you are carrying the following:{down}"
+ 6010 fi=0:for x=1to 27:ifol%(x)=-1thenprintom$(x):fi=1
+ 6020 ifx=1andbfandol%(1)=-1thenprint"  the bucket is full of water."
+ 6025 ifx=14andol%(14)=-1thenprint"  (better fix it)"
+ 6030 nextx:iffi=0thenprint"nothing at all."
+ 6040 goto700
+ 7000 print"do you really want to quit now?"
+ 7001 gosub60000:ifin$=""then7001
+ 7002 ifleft$(in$,1)<>"y"thenprint:print"{down}ok":goto700
+ 7005 print"{clr}"
+ 7010 print"{down}you accumulated";gt;"treasures,"
+ 7020 print"for a score of";gt*20;"points."
+ 7030 print"(100 possible)":ifes=0thenprint"{down}however, you did not escape."
+ 7040 print"{down}this puts you in a class of:":ifesthengt=gt+1
+ 7050 ongt+1goto7060,7070,7075,7090,7100,7110,7115
+ 7060 print"<beginner adventurer>":goto7120
+ 7070 print"<amateur adventurer>":goto7120
+ 7075 print"<journeyman adventurer>":goto7120
+ 7090 print"<experienced adventurer>":goto7120
+ 7100 print"<pro adventurer>":goto7120
+ 7110 print"<master adventurer>":goto7120
+ 7115 print"<grandmaster adventurer>"
+ 7120 ifgt<>6thenprint"{down}better luck next time!"
+ 7150 end
+ 8000 iffna(j)<>-1thenprint"you aren't carrying it!":goto700
+ 8010 x=pt%(j):if(x>3andx<9)orx=19thenprint"don't drop *treasures*!":goto700
+ 8020 ifcp=19andj=19then8100
+ 8030 ifcp=22andj=20then8200
+ 8040 ol%(pt%(j))=cp:print"ok":goto700
+ 8100 in$="as the penny sinks below the surface of the pool, a fleeting image of"
+ 8110 gosub53000:print:print"a chapel with dancers outside appears."
+ 8130 r%(21,3)=22:ol%(12)=-2:goto700
+ 8200 in$="even before it hits the ground, the cross fades away!":gosub53000:print
+ 8210 print"{down}the tablet has disintegrated."
+ 8215 print"{down}you hear music from the organ."
+ 8220 gg=1:ol%(11)=-2:r$(22)="chapel"
+ 8221 om$(24)="closed organ playing music in the corner":goto700
+ 9000 ifj=0thenprint"say what???":goto700
+ 9010 ifj=14then9100
+ 9020 ifj=15then9200
+ 9030 ifj>28then9300
+ 9040 print"okay, '";right$(in$,len(in$)-sp);"'."
+ 9050 forx=1to1000:nextx:print"nothing happens.":goto700
+ 9100 ifcp<>4orchthenprint"nothing happens.":goto700
+ 9110 in$="the snake is charmed by the very utterance of your words."
+ 9111 gosub53000:print
+ 9120 ch=1:ol%(2)=-2:ol%(3)=4:goto700
+ 9200 ifcp<>8orpothenprint"nothing happens.":goto700
+ 9210 print"a portal has opened in the north wall!!"
+ 9220 po=1:r%(8,1)=17:ol%(18)=8:goto700
+ 9300 print"a hollow voice says, 'wrong adventure'.":goto700
+ 10000 ifj<>4thenprint"i wouldn't know how.":goto700
+ 10010 ifol%(1)<>-1andol%(1)<>cpthen51000
+ 10020 ifbf=0thenprint"the bucket is already empty.":goto700
+ 10030 ifcp=19thenprint"ok":goto700
+ 10040 ifcp<>10orfb=0thenprint"the water disappears quickly.":bf=0:goto700
+ 10050 print"congratulations! you have vanquished":print"the flames."
+ 10060 fb=0:bf=0:goto699
+ 11000 ifj=0then50000
+ 11010 ifpt%(j)=-1thenprint"that wouldn't hold anything.":goto700
+ 11020 iffna(j)<>cpandfna(j)<>-1then51000
+ 11030 ifj<>4thenprint"that wouldn't hold anything.":goto700
+ 11040 ifbfthenprint"it's already full.":goto700
+ 11050 ifcp=25andpfthenprint"i'd rather stay away from the mercury.":goto700
+ 11060 ifcp<>23andcp<>19thenprint"i don't see any water here.":goto700
+ 11070 print"your bucket is now full.":bf=1:goto700
+ 12000 ifj=0then50000
+ 12010 ifj<>12andj<>27thenprint"i wouldn't know how to unlock one.":goto700
+ 12020 ifcp<>0andcp<>5andcp<>6then51000
+ 12030 ifcp=0andj=12then12200
+ 12040 ifcp=5andj=27then12300
+ 12050 ifcp<>6orj<>12orol%(16)=-2then51000
+ 12100 print"the trapdoor has no lock":goto700
+ 12200 ifduthenprint"it's already unlocked.":goto700
+ 12210 ifol%(20)<>-1thenprint"i need a key.":goto700
+ 12220 print"the door easily unlocks and swings open.":du=1:goto699
+ 12300 ifvothenprint"it's already open.":goto700
+ 12305 iffv=0then51000
+ 12310 ifkc=0thenprint"i don't know the combination.":goto700
+ 12320 print"ok, let's see. 12..35..6..":print"<click!> the door swings open."
+ 12330 vo=1:r%(5,3)=46:goto699
+ 14000 in$="{down}you are in the "+r$(cp)+".":gosub53000:print
+ 14010 forx=1to28:ifol%(x)<>cpthen14020
+ 14011 in$="there is a "+om$(x)+" here.":print:gosub53000:print
+ 14020 ifx=1andbfandol%(1)=cpthenprint"   the bucket is full of water."
+ 14030 next x
+ 14040 if cp=25andpf then print "{down}the pool is full of liquid mercury!"
+ 14050 if cp<>25orpfthen14060
+ 14055 print"{down}the pool's empty.":ifol%(7)<>48then14060
+ 14056 print "{down}i see something shiny in the pool!"
+ 14060 if cp<>10orfb=0then14090
+ 14070 print"{down}there is a hot fire on the south wall!"
+ 14080 print"if i go that way i'll burn to death!"
+ 14090 if cp<>16then14110
+ 14100 in$="{down}a rich, full voice says, 'ritnew is a charming word'."
+ 14105 gosub53000:print
+ 14110 ifcp=26thenprint"{down}there is a valve on one of the pipes."
+ 14115 ifcp=23thenprint"{down}there is a leaky faucet nearby."
+ 14120 ifcp=10andfb=0thenprint"{down}there is evidence of a recent fire here."
+ 14125 ifcp=5andfvthenprint"{down}there is a vault in the east wall."
+ 14126 ifcp=5andvothenprint"the vault is open."
+ 14127 ifcp=0andduthenprint"{down}an open door leads north."
+ 14130 ifcp<>48thenprint"{down}obvious exits:":ifr%(cp,1)>0thenprint"n ";
+ 14140 ifr%(cp,2)>0thenprint"s ";
+ 14150 ifr%(cp,3)>0thenprint"e ";
+ 14160 ifr%(cp,4)>0thenprint"w ";
+ 14170 print:goto700
+ 15000 ifj<>8andj<>18andj<>28then50000
+ 15010 if(j=8andcp<>48)or(j=18andcp<>2andcp<>27)or(j=28andcp<>25)then51000
+ 15020 ifj=8thencp=25:goto699
+ 15030 ifj=28andpfthenprint"the pool is full of mercury!":goto700
+ 15040 ifj=28thencp=48:goto699
+ 15050 ifcp=27thencp=2:goto699
+ 15060 ifol%(9)=-1then15070
+ 15061 in$="the suits of armor prevent you from going up!":gosub53000
+ 15062 print:goto700
+ 15070 print"the suits of armor try to stop you,"
+ 15080 print"but you fight them off with your sword.":cp=27:goto699
+ 16000 ifcp=0anddu=0thenprint"the door is locked shut.":goto700
+ 16010 ifr%(cp,1)=0then52000
+ 16015 ifcp=0thenprint"{down}the door slams shut behind you!"
+ 16020 cp=r%(cp,1):goto699
+ 17000 ifcp=10andfbthenprint"you have burnt to a crisp!":end
+ 17010 ifcp=4andch=0andps=0thenprint"the snake is about to attack!":ps=1:goto700
+ 17020 ifcp=4andch=0thenprint"the snake bites you!":print"you are dead.":end
+ 17030 d=2:ifi=21ori=22thend=3
+ 17040 ifr%(cp,d)=0then52000
+ 17050 cp=r%(cp,d):goto699
+ 19000 ifr%(cp,4)=0then52000
+ 19010 cp=r%(cp,4):goto699
+ 20000 print:print"if you were to quit now,":print"you would have a score of";
+ 20010 printgt*20;"points.":print"(100 possible){down}"
+ 20020 print"do you indeed wish to quit now? ";
+ 20030 gosub60000
+ 20040 print:ifleft$(in$,1)="y" then 7010
+ 20050 ifleft$(in$,1)<>"n"thenprint"please answer yes or no":goto20020
+ 20060 print"ok":print:goto700
+ 21000 ifj<>7thenprint"i don't know how to turn such a thing.":goto700
+ 21010 ifcp<>26then51000
+ 21020 in$="with much effort, you turn the valve 5 times. you hear the sound "
+ 21030 in$=in$+"of liquid ":gosub53000:print:print"flowing through pipes."
+ 21040 pf=1-pf
+ 21050 ifpf=0andol%(7)=-3thenol%(7)=25:goto700
+ 21060 ifpfandol%(7)=25thenol%(7)=-3:goto700
+ 21070 goto700
+ 22000 ifcp<>27andcp<>29andcp<>32thenprint"there's nowhere to jump.":goto700
+ 22010 print"you jump..":ifcp=27then22500
+ 22020 ifol%(14)=-1then22100
+ 22030 ifol%(27)=-1then22200
+ 22040 print"you hit the ground.":goto22540
+ 22100 print"there is no way to open the parachute!":goto22040
+ 22200 print"you yank the ripcord and the"
+ 22210 print"'chute comes billowing out.":ifcp=32thencp=40:goto699
+ 22220 print"you land safely":print"{down}congratulations on escaping!":es=1:goto7010
+ 22500 ifjmthen22530
+ 22510 print"you have landed down-stairs,":print"and narrowly escaped serious"
+ 22520 print"injury. please don't try it again.":jm=1:cp=2:goto699
+ 22530 print"now you've done it. you ignored":print"my warning, and as a result"
+ 22540 print"you have broken your neck!":print"{down}you are dead.":end
+ 24000 ifcp<>19andcp<>25thenprint"there's nothing here to swim in!":goto700
+ 24010 ifcp=19then print"the water is only a few inches deep.":goto700
+ 24020 ifpfthenprint"in mercury? no way!":goto700
+ 24030 print"the pool is empty.":goto700
+ 25000 ifj=0then50000
+ 25010 ifj=7thenprint"i ain't no plumber.":goto700
+ 25020 ifj<>17thenprint"i wouldn't know how.":goto700
+ 25030 iffna(j)<>cpandfna(j)<>-1then51000
+ 25040 ifol%(14)=-2thenprint"it's already fixed.":goto700
+ 25050 ifol%(17)<>-1thenprint"i need a ripcord.":goto700
+ 25060 print"i'm no expert, but i think it'll work."
+ 25070 ol%(27)=ol%(14):ol%(14)=-2:pt%(17)=27:ol%(17)=0:goto700
+ 50000 printh$(em):em=3-em:goto700
+ 51000 print"i don't see it here.":goto700
+ 52000 print"it's impossible to go that way.":goto700
+ 53000 iflen(in$)<=40orwd=80thenprintin$;:return
+ 53005 oe=41
+ 53010 ifmid$(in$,oe,1)<>" "thenoe=oe-1:goto53010
+ 53020 printleft$(in$,oe):printright$(in$,len(in$)-oe);:return
+ 60000 in$=" ":zt=ti:zc=2:zd$=chr$(20)
+ 60010 getz$:ifz$<>""then60070
+ 60020 ifzt<=tithenprintmid$(" {CBM-+}",zc,1);"{left}";:zc=3-zc:zt=ti+15
+ 60030 goto60010
+ 60070 z=asc(z$):zl=len(in$):if(zand127)<32thenprint" {left}";:goto60110
+ 60090 ifzl>254then60010
+ 60100 in$=in$+z$:printz$;zd$;z$;
+ 60110 ifz=13thenin$=mid$(in$,2):printcr$;:return
+ 60120 ifz=20andzl>1thenin$=left$(in$,zl-1):print"{left}";:goto60010
+ 60130 ifz=141thenz$=chr$(-20*(zl>1)):forz=2tozl:printz$;:nextz:goto60000
+ 60140 goto60010
+ 60500 fori=1to13:print"{SHIFT-*}{SHIFT-*}{SHIFT-*}";:nexti:print"{left}{inst}{SHIFT-*}":return
+ 62000 poke59468,12
+ 62005 print"{clr}{down}{down}";tab(15-len(pg$));pg$;"  by m.j. lansing
+ 62010 print"{down}     cursor #";nm$;"  copyright (c) 1981{down}
+ 62020 gosub60500
+ 62030 print"{down}explore the miser's house   (needs 16k)
+ 62080 print"{down}{down}{down}press {rvon}return{rvof} to begin
+ 62090 getin$:ifin$=""then62090
+ 62100 print"{down}{down}{down}one moment please...":goto20
