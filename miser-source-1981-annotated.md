@@ -141,7 +141,7 @@ memory space.
 >>>>>>> 2c15a0e (Add annotated source code for the original 1981 version.)
 
 The player input is matched to only these 4 characters, so 'ripcage'\
-would match 'ripcord' anyway.
+would match 'ripcord' anyway.  
 </blockquote>
 
 ```
