@@ -127,18 +127,11 @@ The room descriptions get stored in the r$() string array.
 512 data go,nort,n,sout,s,east,e,west,w,scor,turn,jump,swim,i,fix // 16-30
 ```
 <blockquote>
-<<<<<<< HEAD
-Define objects and object pointer.\
-
-The o$ array uses the first 4 characters of the object name to save\
-memory space.\
-=======
 
 Define objects and object pointer.
 
 The o$ array uses the first 4 characters of the object name to save\
 memory space.
->>>>>>> 2c15a0e (Add annotated source code for the original 1981 version.)
 
 The player input is matched to only these 4 characters, so 'ripcage'\
 would match 'ripcord' anyway.  
