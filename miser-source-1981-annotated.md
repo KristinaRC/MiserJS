@@ -141,14 +141,14 @@ would match 'ripcord' anyway.
 550 for i=1 to 30:read o$(i), pt%(i):next i
 560 data ripc,17,mat,10,pape,13,buck,1,swor,9,key,20,valv,-1,ladd,-1 // Objects 1-8
 570 data slip,19,rug,15,book,23,door,-1,cabi,-1,ritn,-1,vict,-1,orga,-1,para,14 // Objects 9-17
-580 data stai,-1,penn,12,cros,11,leaf,4,bag,5,\>\$\<,-1,\>$\<,-1,ring,7,pain,8 // Objects 18-26
+580 data stai,-1,penn,12,cros,11,leaf,4,bag,5,>$<,-1,>$<,-1,ring,7,pain,8 // Objects 18-26
 590 data vaul,-1,pool,-1,xyzz,-1,plug,-1 // Objects 27-30
 ```
 > Define object moniker, object location
 ```
-600 for i=1 to 28:read om$(i),ol%(i):next i:print"{clr}" 
+600 for i=1 to 28:read om$(i),ol%(i):next i:print "{clr}" 
 610 data plastic bucket,26,vicious snake,4,charmed snake,-2,\*golden leaf\*,45
-611 data \*bulging moneybag\*,46,>$\<,-2,\*diamond ring\*,48
+611 data \*bulging moneybag\*,46,>$<,-2,*diamond ring*,48
 612 data \*rare painting\*,39,sword,13,mat,0,rusty cross,23,penny,28
 613 data piece of paper,31,parachute with no ripcord,34,oriental rug,6
 614 data trapdoor marked 'danger',-2
@@ -169,10 +169,33 @@ would match 'ripcord' anyway.
 Arrays start at Index 0 (Zero) in PET BASIC, but she stores\
 the data in indices starting at 1 (ONE).
 
+`pt%` contains index numbers meant to be used with\
+the ol% and om$ arrays.\
+These pt% values do not directly reference object (o$) indices.
+
+If you want to find the location of the ripcord,\
+get the ***value*** of pt%(*o$_index_of_ripcord*),\
+then use that value to get\
+ol%(*pt%_value*), which returns an integer. (See below for types.)
+
+Example: Find location of rusty cross.\
+cross is o$ index 20.\
+Need value of pt%(20).\
+pt%(20) = 11.\
+ol%( pt%(20) ) = ol%( 11 )\
+ol%( 11 ) = 23.\
+23 is r$(23) = back yard.
+
+pt% values can be -1 to indicate an object can't be acted on\
+in some way. Maybe it can't move or be opened.
+
 `ol%` contains integers which sometimes point to one of the rooms\
-listed in lines 400 through 448. (cp value)\
+listed in lines 400 through 448. (r$ values)\
 -1 = carrying the item\
--2 = hidden
+-2 = hidden\
+*or*\
+an integer index into r$ (rooms).\
+`cp` for 'current position' is used for that throughout the program.
 
 |Index| v$ | o$ |pt%|ol%|              om$                       |
 |:---:|:--:|:--:|:-:|:-:|:--------------------------------------:|
@@ -217,9 +240,9 @@ listed in lines 400 through 448. (cp value)\
 735 sp=len(in$)+1:print
 740 sc=sc+1:if mid$(in$,sc,1)=" " then sf=sf+1:sp=sc
 750 if sc<len(in$) then 740
-760 if s>-1 and sf<2 then goto 780
+760 if sf>-1 and sf<2 then goto 780
 770 print "please type a one or two word command":goto 700
-780 cv$=left$(in$,sp-1):for x=1 to 30:if left$(cv$,4)=v$(x) then i=x:goto800
+780 cv$=left$(in$,sp-1):for x=1 to 30:if left$(cv$,4)=v$(x) then i=x:goto 800
 // Didn't understand the verb, so goes to 50000 to print "what?" or "i don't understand that"
 790 next x:goto 50000 
 800 if sf=0 then co$="":j=0:goto 900
@@ -260,10 +283,10 @@ j = object index in o$()
 // Set ol%(pt%(j)) to -1 to indicate object has been picked up.
 1020 ol%(pt%(j))=-1:print "ok"
 // Check if it's a special object (treasure). o$(4,5,7,8,19).
-1030 x=pt%(j):if (x>3 and x\<9) or x=19 then print"you got a treasure!":gt=gt+1
+1030 x=pt%(j):if (x>3 and x<9) or x=19 then print "you got a treasure!":gt=gt+1
 // Special case for the mat. Set object location to front porch, r$(0).
 1040 if j=2 and ol%(20)=-2 then print "you find a door key!":ol%(20)=0 
-1050 goto700
+1050 goto 700
 ```
 ---
 <blockquote>
@@ -278,36 +301,36 @@ j = object index in o$()
 
 ```
 // (move,slide,push) with no object. Doesn't understand.
-2000 ifj=0then50000
-
+2000 if j=0 then 50000
 // A bug in the original program here.
 // The cabinet should not move after the first time, which reveals the vault.
 // Should check for FV here instead of r%(5,3), because r%(5,3)=0 means the vault isn’t open.
 // "(move,slide,push) cabinet" reveals the vault at 2100.
-2005 ifj=13andcp=5and r%(5,3)=0 then 2100 
+2005 if j=13 and cp=5 and r%(5,3)=0 then 2100 
 // This next line will print ‘That item stays put.’, even if the object isn’t at the current position (CP).
 // This reveals objects to the player before they are ever encountered in the game.
 //
 // There is no way to check if the object is at the current position (cp) because\
-// the value of pt\[j\] is used as an index into the ol%() array, and ol%(-1) is invalid.
-2010 if pt%(j)=-1 then print"that item stays put.":goto700
+// the value of pt[j] is used as an index into the ol%() array, and ol%(-1) is invalid.
+2010 if pt%(j)=-1 then print "that item stays put.":goto 700
 // If object not at the current position AND not carrying it, goto 51000.
-2020 if(fna(j)\<\>cp)and(fna(j)\<\>-1)then51000 
-2030 ifj=2andol%(20)=-2then1040
-2040 ifj=10andol%(16)=-2then2200
-2050 print"moving it reveals nothing."
-2060 goto700
-2100 print"behind the cabinet is a vault!"
-2110 fv=1:goto699 // fv means 'found vault'
-2200 print"you find a trap door!"
-2210 ol%(16)=6:goto699
+2020 if (fna(j)<>cp) and (fna(j)<>-1) then 51000
+2030 if j=2 and ol%(20)=-2 then 1040
+2040 if j=10 and ol%(16)=-2 then 2200
+2050 print "moving it reveals nothing."
+2060 goto 700
+2100 print "behind the cabinet is a vault!"
+// fv means 'found vault'
+2110 fv=1:goto 699
+2200 print "you find a trap door!"
+2210 ol%(16)=6:goto 699
 ```
 ---
 <blockquote>
 
 ## Open command.
 
-i = 6 which means v$(6) or "open"
+i = 6 which means v$(6) or "open"\
 j = object index in o$()
 </blockquote>
 
@@ -319,13 +342,13 @@ j = object index in o$()
 4005 if ( fna(j)<>cp ) and ( fna(j)<>-1 ) then 4030
 4010 in$="scrawled in blood on the inside front cover is the message,"
 4011 gosub 53000:print
-4020 print"''victory' is a prize-winning word'.":goto 700
+4020 print "''victory' is a prize-winning word'.":goto 700
 // Open valve.
-4030 if j=7 then print "try turning it.":goto700
+4030 if j=7 then print "try turning it.":goto 700
 4040 if j<>12 then 4120
 // Open door.
-4050 if cp=0 and du=0 then print "sorry, the door is locked.":goto700
-4060 if cp=0 and du then print "it's already open.":goto700
+4050 if cp=0 and du=0 then print "sorry, the door is locked.":goto 700
+4060 if cp=0 and du then print "it's already open.":goto 700
 4070 if cp<>6 then 51000
 // Open trapdoor.
 // This could be a bug. You can open the trapdoor before you move the\
@@ -340,11 +363,11 @@ j = object index in o$()
 4130 if ol%(26)<>cp then 51000
 4140 print "the cabinet is empty and dusty."
 4150 in$="scribbled in dust on one shelf are the words, 'behind me'."
-4155 gosub53000:print:goto 700
+4155 gosub 53000:print:goto 700
 4160 if j<>22 then 4190
 // Open bag.
 4170 if fna(j)<>cp and fna(j)<>-1 then 51000
-4180 print"the bag is knotted securely.":print"it won't open.":goto 700
+4180 print "the bag is knotted securely.":print "it won't open.":goto 700
 4190 if j<>27 then 4230
 // Open vault.
 4200 if cp<>5 or fv=0 then 51000
@@ -353,7 +376,7 @@ j = object index in o$()
 4230 if j<>16 then print "i don't know how to open that.":goto 700
 // Open organ.
 4232 if cp<>21 then 51000
-4235 if gg=0 then print"it's stuck shut.":goto 700
+4235 if gg=0 then print "it's stuck shut.":goto 700
 4240 if ol%(24)=-2 then print "it's already open.":goto 700
 4250 print "as you open it, several objects":print "suddenly appear!"
 4260 ol%(24)=-2:ol%(25)=21:ol%(19)=21:ol%(17)=21:goto 699
@@ -363,7 +386,7 @@ j = object index in o$()
 
 ## Read command.
 
-i = 7 which means v$(7) or "read"
+i = 7 which means v$(7) or "read"\
 j = object index in o$()
 </blockquote>
 
@@ -381,7 +404,7 @@ j = object index in o$()
 
 ## Inventory command.
 
-i = 8 which means v$(8) or "inve" (inventory)
+i = 8 which means v$(8) or "inve" (inventory)\
 i = 29 which means v$(29) or "i" (inventory)
 </blockquote>
 
@@ -390,9 +413,9 @@ i = 29 which means v$(29) or "i" (inventory)
 6000 print "you are carrying the following:{down}"
 6010 fi=0:for x=1 to 27:if ol%(x)=-1 then print om$(x):fi=1
 6020 if x=1 and bf and ol%(1)=-1 then print " the bucket is full of water."
-6025 if x=14 and ol%(14)=-1 then print" (better fix it)"
+6025 if x=14 and ol%(14)=-1 then print " (better fix it)"
 6030 next x:if fi=0 then print "nothing at all."
-6040 goto700
+6040 goto 700
 ```
 ---
 <blockquote>
@@ -403,24 +426,24 @@ i = 9 which means v$(9) or "quit"
 </blockquote>
 
 ```
-7000 print"do you really want to quit now?"
+7000 print "do you really want to quit now?"
 7001 gosub 60000:if in$="" then 7001
-7002 if left$(in$,1)<>"y" then print:print"{down}ok":goto 700
+7002 if left$(in$,1)<>"y" then print:print "{down}ok":goto 700
 // Clear screen.
-7005 print"{clr}"
-7010 print"{down}you accumulated";gt;"treasures,"
-7020 print"for a score of";gt*20;"points."
-7030 print"(100 possible)":if es=0 then print"{down}however, you did not escape."
-7040 print"{down}this puts you in a class of:":if es then gt=gt+1
-7050 on gt+1goto7060,7070,7075,7090,7100,7110,7115
-7060 print"\<beginner adventurer>":goto7120
-7070 print"\<amateur adventurer>":goto7120
-7075 print"\<journeyman adventurer>":goto7120
-7090 print"\<experienced adventurer>":goto7120
-7100 print"\<pro adventurer>":goto7120
-7110 print"\<master adventurer>":goto7120
-7115 print"\<grandmaster adventurer>"
-7120 if gt<>6 then print"{down}better luck next time!"
+7005 print "{clr}"
+7010 print "{down}you accumulated";gt;"treasures,"
+7020 print "for a score of";gt*20;"points."
+7030 print "(100 possible)":if es=0 then print "{down}however, you did not escape."
+7040 print "{down}this puts you in a class of:":if es then gt=gt+1
+7050 on gt+1goto 7060,7070,7075,7090,7100,7110,7115
+7060 print "<beginner adventurer>":goto 7120
+7070 print "<amateur adventurer>":goto 7120
+7075 print "<journeyman adventurer>":goto 7120
+7090 print "<experienced adventurer>":goto 7120
+7100 print "<pro adventurer>":goto 7120
+7110 print "<master adventurer>":goto 7120
+7115 print "<grandmaster adventurer>"
+7120 if gt<>6 then print "{down}better luck next time!"
 7150 end
 ```
 ---
@@ -449,18 +472,18 @@ on a PET with 16K (free bytes under 400), so another check could have
 been left out on purpose to save space.
 
 8000 if fna(j)<>-1 then print "you aren't carrying it!":goto 700
-8010 x=pt%(j):if (x>3andx\<9) or x=19 then print"don't drop *treasures*!":goto 700
+8010 x=pt%(j):if (x>3 and x<9) or x=19 then print "don't drop *treasures*!":goto 700
 8020 if cp=19 and j=19 then 8100 // Portico (cp=19) and Penny (j=19=o$(19))
 8030 if cp=22 and j=20 then 8200 // Chapel and Cross
 
-8040 ol%(pt%(j))=cp:print"ok":goto700
+8040 ol%(pt%(j))=cp:print "ok":goto 700
 
 8100 in$="as the penny sinks below the surface of the pool, a fleeting image of"
 8110 gosub 53000:print:print "a chapel with dancers outside appears."
 8130 r%(21,3)=22:ol%(12)=-2:goto 700
 8200 in$="even before it hits the ground, the cross fades away!":gosub 53000:print
-8210 print"{down}the tablet has disintegrated."
-8215 print"{down}you hear music from the organ."
+8210 print "{down}the tablet has disintegrated."
+8215 print "{down}you hear music from the organ."
 8220 gg=1:ol%(11)=-2:r$(22)="chapel"
 8221 om$(24)="closed organ playing music in the corner":goto 700
 ```
@@ -473,20 +496,20 @@ i = 11 which means v$(11) or "say"
 </blockquote>
 
 ```
-9000 ifj=0thenprint"say what???":goto700
+9000 ifj=0thenprint "say what???":goto 700
 9010 ifj=14then9100
 9020 ifj=15then9200
 9030 ifj>28then9300
-9040 print"okay, '";right$(in$,len(in$)-sp);"'."
-9050 forx=1to1000:nextx:print"nothing happens.":goto700
-9100 ifcp\<\>4orchthenprint"nothing happens.":goto700
+9040 print "okay, '";right$(in$,len(in$)-sp);"'."
+9050 for x=1 to 1000:next x:print "nothing happens.":goto 700
+9100 if cp<>4 or ch then print "nothing happens.":goto 700
 9110 in$="the snake is charmed by the very utterance of your words."
-9111 gosub53000:print
-9120 ch=1:ol%(2)=-2:ol%(3)=4:goto700
-9200 if cp<>8 or po then print"nothing happens.":goto700
-9210 print"a portal has opened in the north wall!!"
-9220 po=1:r%(8,1)=17:ol%(18)=8:goto700
-9300 print"a hollow voice says, 'wrong adventure'.":goto700
+9111 gosub 53000:print
+9120 ch=1:ol%(2)=-2:ol%(3)=4:goto 700
+9200 if cp<>8 or po then print "nothing happens.":goto 700
+9210 print "a portal has opened in the north wall!!"
+9220 po=1:r%(8,1)=17:ol%(18)=8:goto 700
+9300 print "a hollow voice says, 'wrong adventure'.":goto 700
 ```
 ---
 <blockquote>
@@ -518,10 +541,10 @@ i = 13 which means v$(13) or "fill"
 11000 if j=0 then 50000
 11010 if pt%(j)=-1 then print "that wouldn't hold anything.":goto 700
 11020 if fna(j)<>cp and fna(j)<>-1 then 51000
-11030 if j<>4 then print "that wouldn't hold anything.":goto700
+11030 if j<>4 then print "that wouldn't hold anything.":goto 700
 // Fill bucket.
 11040 if bf then print "it's already full.":goto 700
-11050 if cp=25 and pf then print"i'd rather stay away from the mercury.":goto 700
+11050 if cp=25 and pf then print "i'd rather stay away from the mercury.":goto 700
 // Check if in backyard or portico.
 11060 if cp<>23 and cp<>19 then print "i don't see any water here.":goto 700
 11070 print "your bucket is now full.":bf=1:goto 700
@@ -552,8 +575,8 @@ i = 14 which means v$(14) or "unlock"
 12220 print "the door easily unlocks and swings open.":du=1:goto 699
 12300 if vo then print "it's already open.":goto 700
 12305 if fv=0 then 51000
-12310 if kc=0 then print "i don't know the combination.":goto700
-12320 print"ok, let's see. 12..35..6..":print "\<click!> the door swings open."
+12310 if kc=0 then print "i don't know the combination.":goto 700
+12320 print "ok, let's see. 12..35..6..":print "<click!> the door swings open."
 12330 vo=1:r%(5,3)=46:goto 699
 ```
 ---
@@ -588,13 +611,13 @@ goto 14060
 // Reach 14055 if in pool area and the pool is not full (PF=0)
 // Checks object location for object #7, which is the diamond ring.
 // 48 means it's in the pool. Anything else means the player picked it up already.
-14055 print"{down}the pool's empty.":if ol%(7)<>48 then 14060
+14055 print "{down}the pool's empty.":if ol%(7)<>48 then 14060
 14056 print "{down}i see something shiny in the pool!"
 // If player isn't in Blue Drawing Room (CP not equal to 10), or the fire isn’t burning (FB=0), goto 14090.
 14060 if cp<>10 or fb=0 then 14090
  // Player is in Blue Drawing Room with a full bucket
-14070 print"{down}there is a hot fire on the south wall!"
-14080 print"if i go that way i'll burn to death!"
+14070 print "{down}there is a hot fire on the south wall!"
+14080 print "if i go that way i'll burn to death!"
 // If not in pantry goto 14110
 14090 if cp<>16 then 14110
 // In Pantry here cp=16
@@ -602,23 +625,23 @@ goto 14060
 // Can skip over the next 7 checks for cp, and goto 14130.
 14105 gosub 53000:print
 // If in pump house
-14110 if cp=26 then print"{down}there is a valve on one of the pipes."
+14110 if cp=26 then print "{down}there is a valve on one of the pipes."
 // If in backyard
-14115 if cp=23 then print"{down}there is a leaky faucet nearby."
+14115 if cp=23 then print "{down}there is a leaky faucet nearby."
  // If in blue drawing room and bucket of water was thrown on the wall (fb=0)
-14120 if cp=10 and fb=0 then print"{down}there is evidence of a recent fire here."
+14120 if cp=10 and fb=0 then print "{down}there is evidence of a recent fire here."
  // If in red-walled room
-14125 if cp=5 and fv then print"{down}there is a vault in the east wall."
+14125 if cp=5 and fv then print "{down}there is a vault in the east wall."
 // If in red-walled room and the vault was opened (vo true)
 14126 if cp=5 and vo then print "the vault is open."
  // If on front porch and door unlocked (DU)
-14127 if cp=0 and du then print"{down}an open door leads north."
+14127 if cp=0 and du then print "{down}an open door leads north."
 // If not on the bottom of the swimming pool
 // If any of the N S E W numbers from r%(CP, 1 2 3 or 4) are greater than 0, print that direction
-14130 if cp<>48 then print"{down}obvious exits:":if r%(cp,1)>0 then print"n "; 
+14130 if cp<>48 then print "{down}obvious exits:":if r%(cp,1)>0 then print "n "; 
 14140 if r%(cp,2)>0 then print "s ";
-14150 if r%(cp,3)>0 then print"e ";
-14160 if r%(cp,4)>0 then print"w ";
+14150 if r%(cp,3)>0 then print "e ";
+14160 if r%(cp,4)>0 then print "w ";
 14170 print:goto 700
 ```
 ---
@@ -635,7 +658,7 @@ i = 16 which means v$(16) or "go"
 // Go ladder.
 15020 ifj=8 then cp=25:goto 699
 // Go pool, but pool is full..
-15030 if j=28 and pf then print"the pool is full of mercury!":goto 700
+15030 if j=28 and pf then print "the pool is full of mercury!":goto 700
 // Go pool, and pool is empty.
 15040 if j=28 then cp=48:goto 699
 // Go stairs.
@@ -644,23 +667,23 @@ i = 16 which means v$(16) or "go"
 15060 if ol%(9)=-1 then 15070
 // Go stairs without sword.
 15061 in$="the suits of armor prevent you from going up!":gosub 53000
-15062 print:goto700
-15070 print"the suits of armor try to stop you,"
-15080 print"but you fight them off with your sword.":cp=27:goto 699
+15062 print:goto 700
+15070 print "the suits of armor try to stop you,"
+15080 print "but you fight them off with your sword.":cp=27:goto 699
 ```
 ---
 <blockquote>
 
 ## North command.
 
-i = 17 which means v$(17) or "nort" (north)
+i = 17 which means v$(17) or "nort" (north)\
 i = 18 which means v$(18) or "n" (north)
 </blockquote>
 
 ```
 16000 if cp=0 and du=0 then print "the door is locked shut.":goto 700
 16010 if r%(cp,1)=0 then 52000
-16015 if cp=0 then print"{down}the door slams shut behind you!"
+16015 if cp=0 then print "{down}the door slams shut behind you!"
 16020 cp=r%(cp,1):goto 699
 ```
 ---
@@ -668,9 +691,8 @@ i = 18 which means v$(18) or "n" (north)
 
 ## South command.
 
-// i = 19 which means v$(19) or "sout" (south)
-
-// i = 20 which means v$(20) or "s" (south)
+i = 19 which means v$(19) or "sout" (south)\
+i = 20 which means v$(20) or "s" (south)
 </blockquote>
 
 ```
@@ -682,13 +704,13 @@ i = 18 which means v$(18) or "n" (north)
 
 ## East command.
 
-i = 21 which means v$(21) or "east" (east)
+i = 21 which means v$(21) or "east" (east)\
 i = 22 which means v$(22) or "e" (east)
 </blockquote>
 
 ```
 17010 if cp=4 and ch=0 and ps=0 then print "the snake is about to attack!":ps=1:goto 700
-17020 if cp=4 and ch=0 then print "the snake bites you!":print"you are dead.":end
+17020 if cp=4 and ch=0 then print "the snake bites you!":print "you are dead.":end
 17030 d=2:if i=21 or i=22 then d=3
 17040 if r%(cp,d)=0 then 52000
 17050 cp=r%(cp,d):goto 699
@@ -698,14 +720,14 @@ i = 22 which means v$(22) or "e" (east)
 
 ## West command.
 
-i = 23 which means v$(23) or "west" (west)
+i = 23 which means v$(23) or "west" (west)\
 i = 24 which means v$(24) or "w" (west)
 </blockquote>
 
 ```
 // Cannot go west.
 19000 if r%(cp,4)=0 then 52000
-19010 cp=r%(cp,4):goto699
+19010 cp=r%(cp,4):goto 699
 ```
 ---
 <blockquote>
@@ -714,10 +736,10 @@ i = 25 which means v$(25) or "score"
 </blockquote>
 
 ```
-20000 print:print"if you were to quit now,":print"you would have a score of";
-20010 print gt*20;"points.":print"(100 possible){down}"
-20020 print"do you indeed wish to quit now? ";
-20030 gosub60000
+20000 print:print "if you were to quit now,":print "you would have a score of";
+20010 print gt*20;"points.":print "(100 possible){down}"
+20020 print "do you indeed wish to quit now? ";
+20030 gosub 60000
 20040 print:if left$(in$,1)="y" then 7010
 20050 if left$(in$,1)<>"n" then print "please answer yes or no":goto 20020
 20060 print "ok":print:goto 700
@@ -734,7 +756,7 @@ i = 26 which means v$(26) or "turn"
 21000 if j<>7 then print "i don't know how to turn such a thing.":goto 700
 21010 if cp<>26 then 51000
 21020 in$="with much effort, you turn the valve 5 times. you hear the sound "
-21030 in$=in$+"of liquid ":gosub 53000:print:print"flowing through pipes."
+21030 in$=in$+"of liquid ":gosub 53000:print:print "flowing through pipes."
 // Toggle Pool Full (pf)
 21040 pf=1-pf
 // These next 2 lines are not necessary. ol%(7) will never be -3 or 25.
@@ -759,15 +781,15 @@ i = 27 which means v$(27) or "jump"
 22010 print "you jump..":if cp= 27 then 22500
 22020 if ol%(14)=-1 then 22100
 22030 if ol%(27)=-1 then 22200
-22040 print"you hit the ground.":goto22540
-22100 print "there is no way to open the parachute!":goto22040
-22200 print"you yank the ripcord and the"
-22210 print"'chute comes billowing out.":if cp=32 then cp=40:goto 699
-22220 print"you land safely":print"{down}congratulations on escaping!":es=1:goto 7010
+22040 print "you hit the ground.":goto 22540
+22100 print "there is no way to open the parachute!":goto 22040
+22200 print "you yank the ripcord and the"
+22210 print "'chute comes billowing out.":if cp=32 then cp=40:goto 699
+22220 print "you land safely":print "{down}congratulations on escaping!":es=1:goto 7010
 22500 if jm then 22530
-22510 print"you have landed down-stairs,":print"and narrowly escaped serious"
-22520 print"injury. please don't try it again.":jm=1:cp=2:goto 699
-22530 print"now you've done it. you ignored":print "my warning, and as a result"
+22510 print "you have landed down-stairs,":print "and narrowly escaped serious"
+22520 print "injury. please don't try it again.":jm=1:cp=2:goto 699
+22530 print "now you've done it. you ignored":print "my warning, and as a result"
 22540 print "you have broken your neck!":print "{down}you are dead.":end
 ```
 ---
@@ -837,7 +859,7 @@ as an index into the `h$` array.
 </blockquote>
 
 ```
-50000 print h$(em):em=3-em:goto700
+50000 print h$(em):em=3-em:goto 700
 ```
 ---
 <blockquote>
@@ -859,7 +881,7 @@ Tried to go in a direction defined as 0 (ZERO) in r%(room number, N, S, E, W).
 </blockquote>
 
 ```
-52000 print"it's impossible to go that way.":goto700
+52000 print "it's impossible to go that way.":goto 700
 ```
 ---
 <blockquote>
@@ -872,7 +894,7 @@ This subroutine handles wrapping of the IN$ output for 40 character wide screens
 </blockquote>
 
 ```
-53000 if len(in$)\<=40 or wd=80 then print in$;:return
+53000 if len(in$)<=40 or wd=80 then print in$;:return
 53005 oe=41
 // This tests character index 41 in in$ for a space, and if it's a
 // letter, backs up until it finds a space.
@@ -900,22 +922,22 @@ zd$ is set to the ‘delete’ character, PETSCII number 20.
 // Otherwise show the cursor block every 15 jiffies, for 15 jiffies
 // (250ms) (1 jiffy = 1/60 second)
 60020 if zt<=ti then print mid$("{CBM-+}",zc,1);"{left}";:zc=3-zc:zt=ti+15
-60030 goto60010
+60030 goto 60010
 // Build the player input line (in$) as characters (z$) are entered.
-60070 z=asc(z$):zl=len(in$):if (z and 127)<32 then print" {left}";:goto 60110
+60070 z=asc(z$):zl=len(in$):if (z and 127)<32 then print " {left}";:goto 60110
 60090 if zl>254 then 60010
 60100 in$=in$+z$:printz$;zd$;z$;
 // If RETURN key was pressed, return $in to caller.
 // cr$ was never defined in the program – it’s an empty variable here.
 60110 if z=13 then in$=mid$(in$,2):print cr$;:return
-60120 if z=20 and zl>1 then in$=left$(in$,zl-1):print"{left}";:goto 60010
+60120 if z=20 and zl>1 then in$=left$(in$,zl-1):print "{left}";:goto 60010
 // When SHIFT+RETURN (PETSCII 141) is pressed, delete an entire line of
 // input text, if the length of the input line is greater than 1.
 // chr$(-20*(zl>1)) will be 20 if in$ length (zl) is greater than 1.
 // Otherwise it will be 0, and z$ will be chr$(0).
 // (2 > 1) returns -1 in PET BASIC.
 60130 if z=141 then z$=chr$(-20*(zl>1)):for z=2 to zl:print z$;:next z:goto 60000
-60140 goto60010
+60140 goto 60010
 ```
 ---
 <blockquote>
@@ -929,7 +951,7 @@ Only used once, for the title screen, so this is Brian Sawyer’s code.
 </blockquote>
 
 ```
-60500 for i=1 to 13:print"{SHIFT-*}{SHIFT-*}{SHIFT-*}";:next i:print"{left}{inst}{SHIFT-*}":return
+60500 for i=1 to 13:print "{SHIFT-*}{SHIFT-*}{SHIFT-*}";:next i:print "{left}{inst}{SHIFT-*}":return
 ```
 ---
 <blockquote>
@@ -952,12 +974,12 @@ The cover sheet that came with the cassette says 'Mary Jean Winter' is the autho
 // use the lower/upper case mixed mode without the extra graphics.
 62000 poke 59468,12
 // This line mistakenly had 'm.j. lansing' in the 1981 source code.
-62005 print"{clr}{down}{down}";tab(15-len(pg$));pg$;" by m.j. winter"
-62010 print"{down} cursor #";nm$;" copyright (c) 1981{down}
+62005 print "{clr}{down}{down}";tab(15-len(pg$));pg$;" by m.j. winter"
+62010 print "{down} cursor #";nm$;" copyright (c) 1981{down}
 // Print horizontal line.
 62020 gosub 60500
-62030 print"{down}explore the miser's house (needs 16k)
-62080 print"{down}{down}{down}press {rvon}return{rvof} to begin"
+62030 print "{down}explore the miser's house (needs 16k)
+62080 print "{down}{down}{down}press {rvon}return{rvof} to begin"
 // Busy Wait for keypress
 62090 get n$:if in$="" then 62090
-62100 print"{down}{down}{down}one moment please...":goto 20
+62100 print "{down}{down}{down}one moment please...":goto 20
