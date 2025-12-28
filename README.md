@@ -1,6 +1,33 @@
 # MiserJS
 JavaScript port of the Miser text adventure game that was originally released in 1981 for the Commodore PET series of computers.
 
+## Quick Start
+
+1. git clone https://github.com/KristinaRC/MiserJS.git
+2. cd MiserJS
+3. node miserjs
+
+You're now playing the game as it was on the PET back in 1981.
+
+I've added a few commands you can type at the prompt  
+to support saving and restoring the game state:
+
+`save` will save the game state to 'miser-savegame.txt'.  
+`load` will load the game state from 'miser-savegame.txt'.  
+`quit` will just exit the game without saving anything.
+
+Type `score` to see the points update.
+
+### Speed Run
+
+You can also run `node miserjs speedrun`.
+
+This will speedrun the game using commands from  
+the file `speedrun-commands.txt`.
+
+The output will be sent to the console and  
+a file named `speedrun-output.txt`.
+
 ## Background
 
 *Miser* was programmed in Commodore PET BASIC, by Mary Jean Winter, and released in August 1981 as one of the programs featured in *CURSOR* cassette magazine, Issue #27 [(Direct to PDF, Page 63 at archive.org)](https://archive.org/download/cursor-issues/Cursor_Issues.pdf#page=63).
