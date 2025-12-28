@@ -68,18 +68,16 @@ write it to a local file.
 I used the solution files found at The Classic Adventures Solution Archive  
 for the speedrun-commands.txt file.
 
-Those files were provided by:
-Rene van Hasselaar
-Dennis Janssen
-Marco van Slageren
-and 'Alex' (username at CASA)
+Those files were provided by:  
+Rene van Hasselaar  
+Dennis Janssen  
+Marco van Slageren  
+'Alex' (username at CASA)  
 
 ## Other ports
 **Tom Croley** did a PC port of Miser in 1981.  
 **Rene van Hasselaar** ported the 1983 version of Miser to Microsoft Basic on the PC. (miser-pc.bas)  
-
 **John Rumpelein** ported Miser to PHP in 2013.  
-
 **Michael J. Fromberger**, [creachadair here on GitHub](https://github.com/creachadair/miser) , ported Miser to Chipmunk BASIC in 2018,  
 so he could run it on his Macintosh.
 
