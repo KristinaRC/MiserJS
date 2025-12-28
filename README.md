@@ -28,6 +28,61 @@ the file `speedrun-commands.txt`.
 The output will be sent to the console and  
 a file named `speedrun-output.txt`.
 
+### Using the MiserEngine in your own front-end.
+
+```
+import MiserEngine from './miserengine.js';
+miserEngine = new MiserEngine();
+// Start a new game.
+response = miserEngine.newGame();
+// response will have a fresh MiserState object and  
+// output text from the Miser 'look' verb/command.
+//
+// You are in the front porch.
+//
+// There is a mat here.
+//
+// Obvious Exits:
+// N 
+
+// Save the returned MiserState in a variable.
+miserState = response.miserState
+
+// Get input line (string) from player.
+
+// Send the input line (string) and previously saved MiserState.
+response = miserEngine.request(input, miserState);
+// Save MiserState for future requests.
+miserState = response.miserState;
+// Print the output text.
+Example: console.log(response.text)
+```
+
+In the simple front-end provided here - `miserjs.js` - I added  
+`save` and `load` commands, which are not part of `miserengine.js` .
+
+All that does is JSON.stringify the response.miserState object and
+write it to a local file.
+
+### Credits
+I used the solution files found at The Classic Adventures Solution Archive  
+for the speedrun-commands.txt file.
+
+Those files were provided by:
+Rene van Hasselaar
+Dennis Janssen
+Marco van Slageren
+and 'Alex' (username at CASA)
+
+## Other ports
+**Tom Croley** did a PC port of Miser in 1981.  
+**Rene van Hasselaar** ported the 1983 version of Miser to Microsoft Basic on the PC. (miser-pc.bas)  
+
+**John Rumpelein** ported Miser to PHP in 2013.  
+
+**Michael J. Fromberger**, [creachadair here on GitHub](https://github.com/creachadair/miser) , ported Miser to Chipmunk BASIC in 2018,  
+so he could run it on his Macintosh.
+
 ## Background
 
 *Miser* was programmed in Commodore PET BASIC, by Mary Jean Winter, and released in August 1981 as one of the programs featured in *CURSOR* cassette magazine, Issue #27 [(Direct to PDF, Page 63 at archive.org)](https://archive.org/download/cursor-issues/Cursor_Issues.pdf#page=63).
@@ -86,9 +141,7 @@ In 2016, I ported Miser to the Universal Windows Platform (UWP), using C#, in or
 
 Since I had done most of the work already, I decided to translate that C# code to JavaScript and publish it on GitHub, so that others could port it to their favorite language, or maybe a language they were just starting to learn.
 
-I created a 'Miser Engine' which is stateless: send it a JSON string request containing a line of player input and the Miser program variable state, and it will send back a JSON string response with output text from the original game along with an updated variable state. Save the state however you like and send it back with every request. 
-
-The frontend can be anything you want; all you have to do is get a line of player input and send it to the engine. You'll get a text string back that looks exactly like the output from the original 1981 program, complete with the newlines embedded.
+I created a 'Miser Engine' which is stateless. The front-end can be anything you want; all you have to do is get a line of player input and send it to the engine, along with the previously saved game state. You'll get a text string back that looks exactly like the output from the original 1981 program, complete with the newlines embedded.
 
 I never published an NPM package before, so I'll have to learn that to make it easy to `npm install` in `node_modules`.
 

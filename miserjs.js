@@ -33,7 +33,6 @@ class MiserJS {
         this.#rl.on('line', this.#processReadline.bind(this));
     }
 
-
     /**
      * 
      * @param {string} input 

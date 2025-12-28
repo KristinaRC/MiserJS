@@ -13,7 +13,7 @@
  * This engine is stateless.
  */
 export default class MiserEngine {
-    
+
     /**
      * This is where the response text is built, line by line, possibly from multiple methods.  
      * Usually there is some text followed by output from the LOOK command.
@@ -33,7 +33,7 @@ export default class MiserEngine {
      * @type {string|null} First word in input: the verb.
      */
     #verbString = null;
-    
+
     /**
      * Object.
      * @type {string|null} Second word in input: the object. Can be used later, as with the SAY verb.
@@ -46,14 +46,14 @@ export default class MiserEngine {
      *  @type {number} To limit how much of the input string is subject to the tokenizer. */
     static #INPUT_STRING_LIMIT = 40;
 
-    constructor() {}
+    constructor() { }
 
     newGame() {
         // Deep copy the default state.
-        this.#miserState = JSON.parse(JSON.stringify( MiserEngine.#defaultState));
+        this.#miserState = JSON.parse(JSON.stringify(MiserEngine.#defaultState));
         return this.#look();
     }
-        
+
     /**
      * The primary method for playing the game.  
      * Game state data will have to be restored here.  
@@ -66,17 +66,17 @@ export default class MiserEngine {
      * @returns {MiserResponse}
      */
     request(input, miserState) {
-        
+
         this.#outputText = '';
 
         // Simple argument checking here, since you will be using
         // this engine behind your own front-end anyway.
         // Do more strict player input sanitization there.
-                
+
         let playerInput = input;
         this.#miserState = miserState;
 
-        if (!playerInput || !miserState ) {
+        if (!playerInput || !miserState) {
             return this.#response('No input or miserState was provided.', false, false, false, true);
         }
 
@@ -88,11 +88,10 @@ export default class MiserEngine {
         // Change this (above) if you add new commands or object names that would exceed this length.
         // Default value: 40 characters for a "verb object" input line.
         // 
-        if (playerInput.length > MiserEngine.#INPUT_STRING_LIMIT)
-        {
+        if (playerInput.length > MiserEngine.#INPUT_STRING_LIMIT) {
             playerInput = playerInput.substring(0, MiserEngine.#INPUT_STRING_LIMIT);
         }
-        
+
         // Simple tokenizer to get the words.
         //
         let stringIndex = 0;
@@ -100,31 +99,30 @@ export default class MiserEngine {
         let words = [];
         // playerInput was trimmed above, so the first character will not be a space here.
         do {
-            if ( playerInput.charAt(stringIndex) === ' ') {
+            if (playerInput.charAt(stringIndex) === ' ') {
                 // JavaScript substring doesn't include the stringIndex ending character,
                 // which is pointing at space here.
                 // 'push' just adds the word to the words string array (words[]).
-                words.push( playerInput.substring(nextWordStartIndex, stringIndex));
+                words.push(playerInput.substring(nextWordStartIndex, stringIndex));
                 // Move to next character after the space.
                 nextWordStartIndex = stringIndex + 1;
             }
             stringIndex++;
-        } while ( stringIndex < playerInput.length);
-        
+        } while (stringIndex < playerInput.length);
+
         // Get the final word, which might be the entire string if there were no spaces in it.
         // JavaScript substring called without an end index will return a string from the given
         // start position to the end of the string.
-        words.push( playerInput.substring(nextWordStartIndex));
+        words.push(playerInput.substring(nextWordStartIndex));
         //
         // End tokenizer.
-                
+
         /** @type {number} Index into verbs array. */
         let i;
         /** @type {number} Index into objects array. */
         let j;
 
-        switch (words.length)
-        {
+        switch (words.length) {
             case 1:
                 // Search the verbs list 
                 i = this.#GetVerbIndexForString(words[0]);
@@ -155,7 +153,7 @@ export default class MiserEngine {
      * Implements the BASIC code at lines 900-920.  
      * @param {number} i
      * @param {number} j
-     */ 
+     */
     #action(i, j) {
         switch (i) {
             case 1:
@@ -221,10 +219,8 @@ export default class MiserEngine {
      * @param {number} j Index into objects array.
      * @returns {MiserResponse}
      */
-    #getTake(j)
-    {
-        if (j == 0)
-        {
+    #getTake(j) {
+        if (j == 0) {
             return this.#errorString50000();
         }
 
@@ -235,8 +231,7 @@ export default class MiserEngine {
         this.#outputText += "Ok\n";
         // Line 1030
         let x = this.#miserState.pt[j];
-        if ((x > 3 && x < 9) || x === 19)
-        {
+        if ((x > 3 && x < 9) || x === 19) {
             this.#miserState.gt += 1;
             this.#outputText += "You got a treasure!\n";
             return this.#response(this.#outputText);
@@ -244,8 +239,8 @@ export default class MiserEngine {
 
         if (j === 2 && this.#miserState.ol[20] === -2)   // If getting or taking the MAT, and the key is hidden (-2)
         {
-             // Sets key location to Front Porch.
-            this.#miserState.ol[20] = 0;  
+            // Sets key location to Front Porch.
+            this.#miserState.ol[20] = 0;
             this.#outputText += "You find a door key!\n";
         }
 
@@ -275,19 +270,17 @@ export default class MiserEngine {
 
             if (this.#miserState.ol[this.#miserState.pt[j]] != this.#miserState.cp && this.#miserState.ol[this.#miserState.pt[j]] != -1) {
                 // "I don't see it here."
-                return this.#errorString51000();  
+                return this.#errorString51000();
             }
         }
 
         // Only the CABINET, MAT, and RUG can move.
 
-        switch (j)
-        {
+        switch (j) {
             // Mat
             case 2:
                 // If brass door key not found/hidden (-2).
-                if (this.#miserState.ol[20] == -2)
-                {
+                if (this.#miserState.ol[20] == -2) {
                     // Set object location (ol[20]) of key (20) to the front porch (rString[0]).
                     this.#miserState.ol[20] = 0;
                     return this.#response("You find a door key!\n");
@@ -296,8 +289,7 @@ export default class MiserEngine {
             // Oriental Rug
             case 10:
                 // If trapdoor not found/hidden (-2)
-                if (this.#miserState.ol[16] == -2)
-                {
+                if (this.#miserState.ol[16] == -2) {
                     // Found trapdoor. Location is now in the Formal Parlor, so it will be observed on a new LOOK command.
                     this.#outputText += "You find a trap door!\n";
                     this.#miserState.ol[16] = 6;
@@ -315,15 +307,14 @@ export default class MiserEngine {
                     this.#outputText += "Behind the cabinet is a vault!\n";
                     return this.#look();
                 }
-                else
-                {
+                else {
                     return this.#response("That item stays put.\n");
                 }
         }
 
         return this.#response("Moving it reveals nothing.\n");
     }
-    
+
     /**
      * CASE 6: Open.\
      * Lines 4000-4260 in the original Miser program from 1981.\
@@ -334,10 +325,9 @@ export default class MiserEngine {
      * @returns {MiserResponse}
      */
     #open(j) {
-        
 
-        switch (j)
-        {
+
+        switch (j) {
             // Nothing to open
             case 0:
                 return this.#errorString50000();
@@ -346,24 +336,20 @@ export default class MiserEngine {
                 return this.#response("Try turning it.\n");
             // Book
             case 11:
-                if ((this.#miserState.ol[this.#miserState.pt[j]] == this.#miserState.cp) || (this.#miserState.ol[this.#miserState.pt[j]] == -1))
-                {
+                if ((this.#miserState.ol[this.#miserState.pt[j]] == this.#miserState.cp) || (this.#miserState.ol[this.#miserState.pt[j]] == -1)) {
                     return this.#response("Scrawled in blood on the inside front cover is the message, \"'Victory' is a prize-winning word\".\n");
                 }
                 break;
             // Door
             case 12:
-                switch (this.#miserState.cp)
-                {
+                switch (this.#miserState.cp) {
                     // Front Porch
                     case 0:
                         // Door unlocked?
-                        if (this.#miserState.du)
-                        {
+                        if (this.#miserState.du) {
                             return this.#response("It's already open.\n");
                         }
-                        else
-                        {
+                        else {
                             return this.#response("Sorry, the door is locked.\n");
                         }
                     // Formal Parlor
@@ -376,23 +362,18 @@ export default class MiserEngine {
             // Cabinet
             case 13:
                 // In Red-Walled room? (CP=5)
-                if (this.#miserState.ol[26] == this.#miserState.cp)
-                {
+                if (this.#miserState.ol[26] == this.#miserState.cp) {
                     return this.#response("The cabinet is empty and dusty.\nScribbled in dust on one shelf are the words, 'behind me'.\n");
                 }
-                else
-                {
+                else {
                     return this.#errorString51000();
                 }
             // Organ
             case 16:
                 // In Ballroom?
-                if (this.#miserState.cp == 21)
-                {
-                    if (this.#miserState.gg)
-                    {
-                        if (this.#miserState.ol[24] != -2)
-                        {
+                if (this.#miserState.cp == 21) {
+                    if (this.#miserState.gg) {
+                        if (this.#miserState.ol[24] != -2) {
                             // Hide the 'ORGAN IN THE CORNER' and reveal the 'OPEN ORGAN IN THE CORNER'
                             this.#miserState.ol[24] = -2;
                             this.#miserState.ol[25] = 21;
@@ -404,49 +385,40 @@ export default class MiserEngine {
                             this.#outputText += "As you open it, several objects suddenly appear!\n";
                             return this.#look();
                         }
-                        else
-                        {
+                        else {
                             return this.#response("It's already open.\n");
                         }
                     }
-                    else
-                    {
+                    else {
                         return this.#response("It's stuck shut.\n");
                     }
                 }
-                else
-                {
+                else {
                     // "I don't see it here."
                     return this.#errorString51000();
                 }
             // Bag
             case 22:
                 // If in the vault or carrying it 
-                if ((this.#miserState.ol[this.#miserState.pt[j]] == this.#miserState.cp) || (this.#miserState.ol[this.#miserState.pt[j]] == -1))
-                {
+                if ((this.#miserState.ol[this.#miserState.pt[j]] == this.#miserState.cp) || (this.#miserState.ol[this.#miserState.pt[j]] == -1)) {
                     return this.#response("The bag is knotted securely.\nIt won't open.\n");
                 }
-                else
-                {
+                else {
                     return this.#errorString51000();
                 }
             // Vault
             case 27:
                 // If in Red-Walled Room and FV=true (found vault)
-                if ((this.#miserState.cp == 5) && (this.#miserState.fv))
-                {
+                if ((this.#miserState.cp == 5) && (this.#miserState.fv)) {
                     // Vault open?
-                    if (this.#miserState.vo)
-                    {
+                    if (this.#miserState.vo) {
                         return this.#response("It's already open.\n");
                     }
-                    else
-                    {
+                    else {
                         return this.#response("I can't, it's locked.\n");
                     }
                 }
-                else
-                {
+                else {
                     return this.#errorString51000();
                 }
         }
@@ -462,25 +434,21 @@ export default class MiserEngine {
      */
     #read(j) {
         // Second word to act on?
-        if (j == 0)
-        {
+        if (j == 0) {
             // Returns 'What?' or 'I don't understand'. 
             return this.#errorString50000();
         }
 
-        if (this.#miserState.pt[j] == -1)
-        {
+        if (this.#miserState.pt[j] == -1) {
             return this.#response("There's nothing written on that.\n");
         }
 
-        if (!this.#isObjectPresent(j))
-        {
+        if (!this.#isObjectPresent(j)) {
             // Returns "I don't see it here."
             return this.#errorString51000();
         }
 
-        switch (j)
-        {
+        switch (j) {
             // PAPER
             case 3:
                 // Player now knows the combination to the vault
@@ -495,7 +463,7 @@ export default class MiserEngine {
                 return this.#response("There's nothing written on that.\n");
         }
     }
-    
+
     /**
      * Case 8,29: Inventory.  
      * Output a list of all objects the player is carrying.  
@@ -530,7 +498,7 @@ export default class MiserEngine {
             return this.#response(this.#outputText += "Nothing at all.\n");
         }
     }
-    
+
     /**
      * Case 9: Quit.  
      * Lines 7000-7150 in the original Miser program from 1981.
@@ -539,7 +507,7 @@ export default class MiserEngine {
     #quit() {
         return this.#quitOrEndGame(true);
     }
-    
+
     /**
      * Case 10: Drop.  
      * Lines 8000-8221 in the original Miser program from 1981.
@@ -548,8 +516,7 @@ export default class MiserEngine {
      */
     #drop(j) {
         // Preservation of bug in original code
-        if (this.#miserState.pt[j] == -1)
-        {
+        if (this.#miserState.pt[j] == -1) {
             this.#outputText += "?ILLEGAL QUANTITY ERROR IN LINE 8000\n\n";
             this.#outputText += "** You have encountered a bug that existed in the original Miser program from 1981. **\n\n";
             this.#outputText += "** This bug is being reproduced here to preserve the experience a player would have had playing this game in 1981 on one of the Commodore Pet computers. Except for one thing...the game doesn't just end unexpectedly here as it did before. You get to keep playing as if nothing bad happened!\n\n";
@@ -558,8 +525,7 @@ export default class MiserEngine {
         }
 
         // Carrying this object?
-        if (this.#miserState.ol[this.#miserState.pt[j]] != -1)
-        {
+        if (this.#miserState.ol[this.#miserState.pt[j]] != -1) {
             return this.#response("You aren't carrying it!\n");
         }
 
@@ -568,8 +534,7 @@ export default class MiserEngine {
         // All other objects just get dropped with an 'Ok' response.
 
         // Check for one of the 5 treasures
-        switch (this.#miserState.pt[j])
-        {
+        switch (this.#miserState.pt[j]) {
             // One of the 5 treasures
             // Remember that the value of pt[j] is an index into the omString[] array (om$() in original program).
             case 4:
@@ -581,13 +546,11 @@ export default class MiserEngine {
         }
 
         // Check for a Penny or a Cross specifically. All other objects should just be dropped with a response of "Ok"
-        switch (j)
-        {
+        switch (j) {
             // Drop Penny
             case 19:
                 // In Portico?
-                if (this.#miserState.cp == 19)
-                {
+                if (this.#miserState.cp == 19) {
                     // The Penny is being carried, and the player is in the Portico.
                     // DROP PENNY action
 
@@ -603,8 +566,7 @@ export default class MiserEngine {
             // Drop Cross.
             case 20:
                 // In Chapel?
-                if (this.#miserState.cp == 22)
-                {
+                if (this.#miserState.cp == 22) {
                     // The CROSS is being carried, and the player is in the Chapel.
                     // DROP CROSS action
                     // LINES 8200-8221 in the original program.
@@ -633,32 +595,27 @@ export default class MiserEngine {
         this.#miserState.ol[this.#miserState.pt[j]] = this.#miserState.cp;
         return this.#response("Ok\n");
     }
-    
+
     /**
      * Case 11: Say.  
      * Lines 9000-9300 in the original Miser program from 1981.
      * @param {number} j Index into objects array.
      * @returns {MiserResponse}
      */
-    #say(j)
-    {
-        switch (j)
-        {
+    #say(j) {
+        switch (j) {
             // No second word to say
             case 0:
                 return this.#response("Say what???\n");
             // Lines 9100-9120 Say ritnew
             case 14:
                 // In Pantry?
-                if (this.#miserState.cp == 4)
-                {
+                if (this.#miserState.cp == 4) {
                     // Charmed Snake?
-                    if (this.#miserState.ch)
-                    {
+                    if (this.#miserState.ch) {
                         return this.#response("Nothing happens.\n");
                     }
-                    else
-                    {
+                    else {
                         this.#miserState.ch = true;
                         // Vicious snake disappears from conservatory.
                         this.#miserState.ol[2] = -2;
@@ -667,22 +624,18 @@ export default class MiserEngine {
                         return this.#response("The snake is charmed by the very utterance of your words.\n");
                     }
                 }
-                else
-                {
+                else {
                     return this.#response("Nothing happens.\n");
                 }
             // Lines 9200-9220 Say victory
             case 15:
                 // In Trophy room?
-                if (this.#miserState.cp == 8)
-                {
+                if (this.#miserState.cp == 8) {
                     // Portal open?
-                    if (this.#miserState.po)
-                    {
+                    if (this.#miserState.po) {
                         return this.#response("Nothing happens.\n");
                     }
-                    else
-                    {
+                    else {
                         // Set Portal Open
                         this.#miserState.po = true;
                         // Set Trophy Room north direction to point toward rString[17], which is the Game Room.
@@ -693,8 +646,7 @@ export default class MiserEngine {
                         return this.#response("A portal has opened in the north wall!!\n");
                     }
                 }
-                else
-                {
+                else {
                     return this.#response("Nothing happens.\n");
                 }
             // Line 9300 Say Xyzzy, Say Plugh (These are magic words used in the 'Colossal Cave Adventure' game from 1975!)
@@ -713,32 +665,26 @@ export default class MiserEngine {
      * @param {number} j Index into objects array.
      * @returns {MiserResponse}
      */
-    #pour(j)
-    {
+    #pour(j) {
         // Only the bucket (oString[4]) can be poured.
-        if (j != 4)
-        {
+        if (j != 4) {
             return this.#response("I wouldn't know how.\n");
         }
 
-        if (!this.#isObjectPresent(j))
-        {
+        if (!this.#isObjectPresent(j)) {
             return this.#errorString51000();
         }
 
         // Is bucket empty?
-        if (!this.#miserState.bf)
-        {
+        if (!this.#miserState.bf) {
             return this.#response("The bucket is already empty.\n");
         }
 
-        switch (this.#miserState.cp)
-        {
+        switch (this.#miserState.cp) {
             // BLUE DRAWING ROOM
             case 10:
                 // Is fire burning?
-                if (this.#miserState.fb)
-                {
+                if (this.#miserState.fb) {
                     // Fire Burning becomes FALSE. The fire is out now.
                     this.#miserState.fb = false;
                     // Bucket is no longer full.
@@ -750,7 +696,7 @@ export default class MiserEngine {
             // PORTICO
             case 19:
                 return this.#response("Ok\n");
-                // 
+            // 
         }
         return this.#response("The water disappears quickly.\n");
     }
@@ -761,36 +707,29 @@ export default class MiserEngine {
      * @param {number} j Index into objects array.
      * @returns {MiserResponse}
      */
-    #fill(j)
-    {
-        if (j == 0)
-        {
+    #fill(j) {
+        if (j == 0) {
             // "What?" or "I don't understand."
             return this.#errorString50000();
         }
 
-        if (this.#miserState.pt[j] == -1)
-        {
+        if (this.#miserState.pt[j] == -1) {
             return this.#response("That wouldn't hold anything.\n");
         }
 
 
-        if (!this.#isObjectPresent(j))
-        {
+        if (!this.#isObjectPresent(j)) {
             // "I don't see it here."
             return this.#errorString51000();
         }
 
         // Is this the bucket?
-        if (j == 4)
-        {
+        if (j == 4) {
             // Is the bucket full?
-            if (this.#miserState.bf)
-            {
+            if (this.#miserState.bf) {
                 return this.#response("It's already full.\n");
             }
-            switch (this.#miserState.cp)
-            {
+            switch (this.#miserState.cp) {
 
                 // Bucket can ony be filled in the PORTICO and BACK YARD near the faucet.
                 case 19:
@@ -799,21 +738,19 @@ export default class MiserEngine {
                     return this.#response("Your bucket is now full.\n");
                 // POOL AREA
                 case 25:
-                    if (this.#miserState.pf)
-                    {
+                    if (this.#miserState.pf) {
                         return this.#response("I'd rather stay away from the mercury.\n");
                     }
                     break;
             }
             return this.#response("I don't see any water here.\n");
         }
-        else
-        {
+        else {
             // Only the bucket can be filled
             return this.#response("That wouldn't hold anything.\n");
         }
     }
-    
+
     /**
      * Unlock.  
      * Only the DOOR, TRAPDOOR, and VAULT are acted on here.  
@@ -822,32 +759,26 @@ export default class MiserEngine {
      * @param {number} j Index into objects array.
      * @returns {MiserResponse}
      */
-    #unlock(j)
-    {
+    #unlock(j) {
         // Only the DOOR/TRAPDOOR (12) and the VAULT (27) can be unlocked
-        switch (j)
-        {
+        switch (j) {
             // No object
             case 0:
                 // Return "What?" or "I don't understand."
                 return this.#errorString50000();
             // Door or Trapdoor
             case 12:
-                switch (this.#miserState.cp)
-                {
+                switch (this.#miserState.cp) {
                     // Door at Front Porch (CP=0)
                     case 0:
-                        if (this.#miserState.du)
-                        {
+                        if (this.#miserState.du) {
                             return this.#response("It's already unlocked.\n");
                         }
                         // Carrying the key? (omString[20])
-                        if (this.#miserState.ol[20] != -1)
-                        {
+                        if (this.#miserState.ol[20] != -1) {
                             return this.#response("I need a key.\n");
                         }
-                        else
-                        {
+                        else {
                             this.#miserState.du = true;
 
                             this.#outputText += "The door easily unlocks and swings open.\n";
@@ -868,19 +799,15 @@ export default class MiserEngine {
             // Vault
             case 27:
                 // In Red-Walled Room?
-                if (this.#miserState.cp == 5)
-                {
+                if (this.#miserState.cp == 5) {
                     // Vault open?
-                    if (this.#miserState.vo)
-                    {
+                    if (this.#miserState.vo) {
                         return this.#response("It's already open.\n");
                     }
                     // Found vault?
-                    if (this.#miserState.fv)
-                    {
+                    if (this.#miserState.fv) {
                         // Know combination?
-                        if (this.#miserState.kc)
-                        {
+                        if (this.#miserState.kc) {
                             this.#miserState.vo = true;
                             // Modifies rPercent array.
                             this.#miserState.rPercent[5][3] = 46;
@@ -888,19 +815,16 @@ export default class MiserEngine {
                             this.#outputText += "Ok, let's see. 12..35..6..\n<CLICK!> The door swings open.";
                             return this.#look();
                         }
-                        else
-                        {
+                        else {
                             return this.#response("I don't know the combination.\n");
                         }
                     }
-                    else
-                    {
+                    else {
                         // "I don't see it here."
                         return this.#errorString51000();
                     }
                 }
-                else
-                {
+                else {
                     // "I don't see it here."
                     return this.#errorString51000();
                 }
@@ -914,21 +838,17 @@ export default class MiserEngine {
      * Lines 14000-14170 in the original Miser program from 1981.  
      * @returns {MiserResponse}
      */
-    #look()
-    {
+    #look() {
         // Line 14000 - Print current position
-        this.#outputText += `\nYou are in the ${this.#miserState.rString[this.#miserState.cp]}.\n`;    
+        this.#outputText += `\nYou are in the ${this.#miserState.rString[this.#miserState.cp]}.\n`;
 
         // Lines 14010-14030 Print list of all objects at this location (CP variable)
-        for (let x = 1; x < 29; x++)
-        {
-            if (this.#miserState.ol[x] == this.#miserState.cp)
-            {
+        for (let x = 1; x < 29; x++) {
+            if (this.#miserState.ol[x] == this.#miserState.cp) {
                 // Object at this location (CP)
                 this.#outputText += `\nThere is a ${this.#miserState.omString[x]} here.\n`;
                 // If the plastic bucket is here and it is full (BF=true).
-                if ((x == 1) && this.#miserState.bf) 
-                {
+                if ((x == 1) && this.#miserState.bf) {
                     this.#outputText += "  The bucket is full of water.\n";
                 }
             }
@@ -936,8 +856,7 @@ export default class MiserEngine {
 
         // Special actions depending on current position (CP)
 
-        switch (this.#miserState.cp)
-        {
+        switch (this.#miserState.cp) {
             // Line 14127 Front Porch
             case 0:
                 // Door unlocked?
@@ -952,12 +871,10 @@ export default class MiserEngine {
             // Lines 14060-14080 and 14120 Blue Drawing Room
             case 10:
                 // Fire Burning
-                if (this.#miserState.fb)
-                {
+                if (this.#miserState.fb) {
                     this.#outputText += "\nThere is a hot fire on the south wall!\nIf I go that way I'll burn to death!\n";
                 }
-                else
-                {
+                else {
                     this.#outputText += "\nThere is evidence of a recent fire here.\n";
                 }
                 break;
@@ -1002,7 +919,7 @@ export default class MiserEngine {
 
         return this.#response(this.#outputText);
     }
-    
+
     /**
      * CASE 16: Go.  
      * Lines 15000-15080 in the original Miser program from 1981.  
@@ -1011,28 +928,24 @@ export default class MiserEngine {
      */
     #go(j) {
         // Valid objects are Ladder(8), Stairs(18), and Pool(28).
-        switch (j)
-        {
+        switch (j) {
             // Ladder
             case 8:
                 // In bottom of pool?
-                if (this.#miserState.cp == 48)
-                {
+                if (this.#miserState.cp == 48) {
                     // Move from 'bottom of swimming pool' to 'Pool Area'
                     this.#miserState.cp = 25;
 
                     return this.#look();
                 }
-                else
-                {
+                else {
                     // Print "I don't see it here."
                     return this.#errorString51000();
                 }
             // Stairs
             case 18:
                 // In 'Great Hall' or 'Middle of the western hallway'?
-                switch (this.#miserState.cp)
-                {
+                switch (this.#miserState.cp) {
                     // Great Hall.
                     case 2:
                         // Carrying sword?
@@ -1058,12 +971,10 @@ export default class MiserEngine {
             // Pool
             case 28:
                 // Pool full?
-                if (this.#miserState.pf)
-                {
+                if (this.#miserState.pf) {
                     return this.#response("The pool is full of mercury!\n");
                 }
-                else
-                {
+                else {
                     // Move to bottom of swimming pool
                     this.#miserState.cp = 48;
 
@@ -1081,8 +992,7 @@ export default class MiserEngine {
      * @returns {MiserResponse}
      */
     #north() {
-        if (this.#miserState.cp == 0 && !this.#miserState.du)
-        {
+        if (this.#miserState.cp == 0 && !this.#miserState.du) {
             this.#outputText += "The door is locked shut.\n";
             return this.#response(this.#outputText);
         }
@@ -1091,7 +1001,7 @@ export default class MiserEngine {
 
             return this.#errorString52000();
 
-        } 
+        }
 
         if (this.#miserState.cp == 0) this.#outputText += "The door slams shut behind you!\n";
 
@@ -1104,18 +1014,15 @@ export default class MiserEngine {
      * Lines 17000 to 17050 in the original Miser program from 1981.  
      * @returns {MiserResponse}
      */
-    #south()
-    {
-        if (this.#miserState.cp == 10 && this.#miserState.fb)
-        {
+    #south() {
+        if (this.#miserState.cp == 10 && this.#miserState.fb) {
             this.#outputText += "You have burnt to a crisp!\n";
 
             return this.#response(this.#outputText, true, true);
         }
 
         const snakeAction = this.#checkSnake();
-        if (snakeAction != null)
-        {
+        if (snakeAction != null) {
             return snakeAction;
         }
 
@@ -1133,8 +1040,7 @@ export default class MiserEngine {
     */
     #east() {
         const snakeAction = this.#checkSnake();
-        if (snakeAction != null)
-        {
+        if (snakeAction != null) {
             return snakeAction;
         }
 
@@ -1173,15 +1079,12 @@ export default class MiserEngine {
     * @param {number} j Index into objects array.
     * @returns {MiserResponse}
     */
-    #turn(j)
-    {
-        if (j != 7)
-        {
+    #turn(j) {
+        if (j != 7) {
             return this.#response("I don't know how to turn such a thing.\n");
         }
 
-        if (this.#miserState.cp != 26)
-        {
+        if (this.#miserState.cp != 26) {
             return this.#errorString51000();
         }
 
@@ -1189,7 +1092,7 @@ export default class MiserEngine {
         this.#miserState.pf = !this.#miserState.pf;
         return this.#response("With much effort, you turn the valve 5 times. You hear the sound of liquid\nflowing through the pipes.\n");
     }
-    
+
     /**
     * CASE 27: Jump.  
     * Can only JUMP from MIDDLE OF THE WESTERN HALLWAY, FRONT BALCONY, and REAR BALCONY.  
@@ -1199,18 +1102,15 @@ export default class MiserEngine {
     #jump() {
         let playerDied = false;
 
-        switch (this.#miserState.cp)
-        {
+        switch (this.#miserState.cp) {
             case 27:
                 // MIDDLE OF THE WESTERN HALLWAY
                 this.#outputText += "You jump...\n";
-                if (this.#miserState.jm)
-                {
+                if (this.#miserState.jm) {
                     this.#outputText += "Now you've done it. You ignored\nmy warning, and as a result\nyou have broken your neck!\n\nYou are dead.";
                     playerDied = true;
                 }
-                else
-                {
+                else {
                     this.#miserState.jm = true;
                     this.#miserState.cp = 2;
                     this.#outputText += "You have landed down-stairs,\nand narrowly escaped serious\ninjury. Please don't try it again.\n";
@@ -1226,8 +1126,7 @@ export default class MiserEngine {
                 //      2) Carrying the parachute that hasn't been fixed with the ripcord.
                 //      3) Carrying a fully functional parachute.
 
-                if (this.#miserState.ol[14] == -1)
-                {
+                if (this.#miserState.ol[14] == -1) {
                     // Have Parachute with no ripcord
                     this.#outputText += "There is no way to open the parachute!\n";
                     this.#outputText += "You hit the ground.\n";
@@ -1237,26 +1136,22 @@ export default class MiserEngine {
                     break;
 
                 }
-                else if (this.#miserState.ol[27] == -1)
-                {
+                else if (this.#miserState.ol[27] == -1) {
                     // Have fully functional parachute
                     this.#outputText += "You yank the ripcord and the\n'chute comes billowing out.\n";
-                    if (this.#miserState.cp == 32)
-                    {
+                    if (this.#miserState.cp == 32) {
                         // At rear balcony, so change current position to HEDGE MAZE (40)
                         this.#miserState.cp = 40;
                         return this.#look();
                     }
                     else
-                    if (this.#miserState.cp == 29)
-                    {
-                        this.#outputText += "You land safely.\n\nCongratulations on escaping!\n";
-                        this.#miserState.es = true;
-                        return this.#quitOrEndGame(true, false, true);
-                    }
+                        if (this.#miserState.cp == 29) {
+                            this.#outputText += "You land safely.\n\nCongratulations on escaping!\n";
+                            this.#miserState.es = true;
+                            return this.#quitOrEndGame(true, false, true);
+                        }
                 }
-                else
-                {
+                else {
                     this.#outputText += "You hit the ground.\n";
                     this.#outputText += "You have broken your neck!\n\n";
                     this.#outputText += "You are dead.";
@@ -1277,27 +1172,24 @@ export default class MiserEngine {
             return this.#response(this.#outputText);
         }
     }
-    
+
     /**
     * CASE 28: Swim.  
     * Lines 24000 to 24030 in the original Miser program from 1981.  
     * @returns {MiserResponse}
     */
     #swim() {
-        switch (this.#miserState.cp)
-        {
+        switch (this.#miserState.cp) {
             // Portico
             case 19:
                 return this.#response("The water is only a few inches deep.\n");
             // Pool area
             case 25:
                 // Pool full?
-                if (this.#miserState.pf)
-                {
+                if (this.#miserState.pf) {
                     return this.#response("In mercury? No way!\n");
                 }
-                else
-                {
+                else {
                     return this.#response("The pool is empty.\n");
                 }
             default:
@@ -1314,8 +1206,7 @@ export default class MiserEngine {
     * @returns {MiserResponse}
     */
     #fix(j) {
-        switch (j)
-        {
+        switch (j) {
             // Nothing to fix
             case 0:
                 return this.#errorString50000();
@@ -1324,20 +1215,17 @@ export default class MiserEngine {
                 return this.#response("I ain't no plumber.\n");
             case 17:
                 // If parachute with no ripcord isn't at current position AND not carrying it
-                if (!this.#isObjectPresent(j))
-                {
+                if (!this.#isObjectPresent(j)) {
                     // Print "I don't see it here."
                     return this.#errorString51000();
                 }
 
-                if (this.#miserState.ol[14] == -2)
-                {
+                if (this.#miserState.ol[14] == -2) {
                     return this.#response("It's already fixed.\n");
                 }
 
                 // If not carrying the ripcord
-                if (this.#miserState.ol[17] != -1)
-                {
+                if (this.#miserState.ol[17] != -1) {
                     return this.#response("I need a ripcord.\n");
                 }
 
@@ -1356,10 +1244,8 @@ export default class MiserEngine {
         }
     }
 
-    #checkSnake()
-    {
-        if (this.#miserState.cp == 4 && !this.#miserState.ch)
-        {
+    #checkSnake() {
+        if (this.#miserState.cp == 4 && !this.#miserState.ch) {
             if (!this.#miserState.ps) {
                 this.#miserState.ps = true;
                 return this.#response("The snake is about to attack!\n");
@@ -1371,21 +1257,18 @@ export default class MiserEngine {
         }
     }
 
-    #quitOrEndGame( isGameOver = false, playerDied = false, playerEscaped = false) {
+    #quitOrEndGame(isGameOver = false, playerDied = false, playerEscaped = false) {
         this.#outputText += `\nYou accumulated ${this.#miserState.gt} treasures, \n for a score of ${this.#miserState.gt * 20} points.\n(100 Possible)\n`;
-        if (this.#miserState.es)
-        {
+        if (this.#miserState.es) {
             this.#miserState.gt++;
         }
-        else
-        {
+        else {
             this.#outputText += "\nHowever, you did not escape.\n";
         }
 
-        this.#outputText += `\nThis puts you in a class of:\n${this.#rank[this.#miserState.gt]}\n`;
+        this.#outputText += `\nThis puts you in a class of:\n${MiserEngine.#rank[this.#miserState.gt]}\n`;
 
-        if (this.#miserState.gt != 6)
-        {
+        if (this.#miserState.gt != 6) {
             this.#outputText += `\nBetter luck next time!\n`;
         }
 
@@ -1401,7 +1284,7 @@ export default class MiserEngine {
      * @param {boolean} [isError=false] Signal an error to the host program.
      * @returns {MiserResponse}
      */
-    #response(outputText, isGameOver = false, playerDied = false, playerEscaped = false, isError = false ) {
+    #response(outputText, isGameOver = false, playerDied = false, playerEscaped = false, isError = false) {
 
         return {
             text: outputText,
@@ -1420,14 +1303,13 @@ export default class MiserEngine {
      */
     #GetVerbIndexForString(s) {
         s = s.toLowerCase();
-        if (s.length > 4)
-        {
+        if (s.length > 4) {
             s = s.substring(0, 4);
         }
-        
+
         // This can be done more efficiently in most languages, but this is how it's done in the original 1981 program at Line 810.
         for (let x = 1; x < 31; x++) {
-            if (s === this.#verbs[x]) {
+            if (s === MiserEngine.#verbs[x]) {
                 // Match. Return array index into the verbs array.
                 return x;
             }
@@ -1443,13 +1325,12 @@ export default class MiserEngine {
 
     #GetObjectIndexForString(s) {
         s = s.toLowerCase();
-        if (s.length > 4)
-        {
+        if (s.length > 4) {
             s = s.substring(0, 4);
         }
 
         for (let x = 1; x < 31; x++) {
-            if (s === this.#objects[x]) {
+            if (s === MiserEngine.#objects[x]) {
                 // Match. Return array index into the objects array.
                 return x;
             }
@@ -1463,7 +1344,7 @@ export default class MiserEngine {
      * @returns {MiserResponse}
      */
     #errorString50000() {
-        this.#outputText += `${this.#hString[this.#miserState.em]}\n`;
+        this.#outputText += `${MiserEngine.#hString[this.#miserState.em]}\n`;
         // Alternate between hString[1] and hString[2].
         this.#miserState.em = 3 - this.#miserState.em;
         return this.#response(this.#outputText);
@@ -1521,8 +1402,8 @@ export default class MiserEngine {
      * STATIC DATA: This array was not modified in the original source code.
      * @type {string[]}
      */
-    #verbs = [
-        "", 
+    static #verbs = [
+        "",
         "get",
         "take",
         "move",
@@ -1562,7 +1443,7 @@ export default class MiserEngine {
      * STATIC DATA: This array was not modified in the original source code.
      * @type {string[]}
      */
-    #objects = [
+    static #objects = [
         "",
         "ripc",
         "mat",
@@ -1605,7 +1486,7 @@ export default class MiserEngine {
      * STATIC DATA: This array was not modified in the original source code.
      * @type {string[]}
      */
-    #hString = [
+    static #hString = [
         "",
         "What?",
         "I don't understand that."
@@ -1616,7 +1497,7 @@ export default class MiserEngine {
      * STATIC DATA.
      * @type {string[]}
      */
-    #rank = [
+    static #rank = [
         "<Beginner Adventurer>",
         "<Amateur Adventurer>",
         "<Journeyman Adventurer>",
@@ -1648,7 +1529,7 @@ export default class MiserEngine {
         es: false,
         jm: false,
         gg: false,
-        
+
         /**
          * Object Pointer array.  
          * pt starts at index 1 in the original program. I'm keeping that here and just setting index 0 to 0.  
@@ -1663,7 +1544,7 @@ export default class MiserEngine {
          * @type {number[]} 
          */
         pt: [
-            0,  
+            0,
             17,
             10,
             13,
@@ -1737,6 +1618,8 @@ export default class MiserEngine {
         ],
 
         // omString[24] gets modified based on gg variable.
+        // This entire array should not be saved in miserState.
+        // It should be a diff with the default state.
 
         omString: [
             "",     // om$ begins at 1 in the original program. Setting index 0 to "" here.
@@ -1770,12 +1653,11 @@ export default class MiserEngine {
             "sign saying 'drop coins for luck'"
         ],
 
-        /**
-         * Room and place descriptions.
-         * rString[22], the chapel room, gets modified!  
-         * This will need to be saved in the game state.
-         * @type {string[]}
-         */
+        // Room and place descriptions.
+        // rString[22], the chapel room, gets modified!  
+        // This entire array should not be saved in miserState.
+        // It should be a diff with the default state.
+        
         rString: [
             "front porch",
             "Foyer to a large house. Dust is everywhere",
@@ -1828,6 +1710,12 @@ export default class MiserEngine {
             "bottom of the Swimming Pool. A ladder leads up and out"
         ],
 
+        // This entire array should not be saved in miserState.
+        // It should be a diff with the default state.
+        // rPercent[5][3] gets modified. (Red-walled room. East becomes 46, to go into vault. )
+        // rPercent[8][1] gets modified. (Trophy room. North becomes 17, to go to Game Room. )
+        // rPercent[21][3] gets modified. (Ballroom. East becomes 22, to go to Chapel.)
+        //
         rPercent: [
             [0, 1, 0, 0, 0],
             [0, 2, 0, 0, 12],
