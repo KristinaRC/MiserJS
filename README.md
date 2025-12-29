@@ -75,11 +75,10 @@ Marco van Slageren
 'Alex' (username at CASA)  
 
 ## Other ports
-**Tom Croley** did a PC port of Miser in 1981.  
-**Rene van Hasselaar** ported the 1983 version of Miser to Microsoft Basic on the PC. (miser-pc.bas)  
-**John Rumpelein** ported Miser to PHP in 2013.  
-**Michael J. Fromberger**, [creachadair here on GitHub](https://github.com/creachadair/miser) , ported Miser to Chipmunk BASIC in 2018,  
-so he could run it on his Macintosh.
+**Tom Croley** did a PC port of Miser in 1983.  
+**Rene van Hasselaar** ported the 1983 Commodore 64 BASIC version of Miser to MS-DOS in 1999.  
+**John Rumpelein** ported Miser to PHP in 2013. [(Link to his page about it.)](https://rumpelein.com/miser-text-adventure/)  
+**Michael J. Fromberger**, [creachadair here on GitHub](https://github.com/creachadair/miser), ported Miser to [Chipmunk BASIC](https://www.nicholson.com/rhn/basic/) in 2018, so he could run it on his Macintosh.
 
 ## Background
 

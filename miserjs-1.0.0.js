@@ -4,11 +4,14 @@ import { stdin as input, stdout as output } from 'node:process';
 import { readFileSync } from 'node:fs';
 import { open, writeFile, readFile } from 'node:fs/promises';
 import { argv, exit } from 'node:process';
-import MiserEngine from './miserengine.js';
+import MiserEngine from './miserengine-1.0.0.js';
 
-/** @import {MiserState, MiserResponse} from './miserengine.js' */
+/** @import {MiserState, MiserResponse} from './miserengine-1.0.0.js' */
 
 class MiserJS {
+
+/** @type {string} */
+#SAVEGAME_FILENAME = "miserjs-savegame.txt";
 
 /** @type {MiserEngine} */
 #miserEngine;
@@ -44,11 +47,11 @@ class MiserJS {
                 this.#rl.close();
                 break;
             case 'save':
-                await writeFile('miser-savegame.txt', JSON.stringify(this.#miserState, null, 4), 'utf8');
+                await writeFile(this.#SAVEGAME_FILENAME, JSON.stringify(this.#miserState, null, 4), 'utf8');
                 console.log('Game saved.\n');
                 break;
             case 'load':
-                let jsonData =  await readFile('miser-savegame.txt', 'utf8');
+                let jsonData =  await readFile(this.#SAVEGAME_FILENAME, 'utf8');
                 this.#miserState = JSON.parse(jsonData);
                 console.log('Game restored.');
                 response = this.#request('look');

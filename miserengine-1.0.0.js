@@ -224,8 +224,8 @@ export default class MiserEngine {
             return this.#errorString50000();
         }
 
-        if (this.#miserState.pt[j] == -1) return this.#response("I am unable to do that.");
-        if (this.#fna(j) == -1) return this.#response("You're already carrying it.");
+        if (this.#miserState.pt[j] == -1) return this.#response("I am unable to do that.\n");
+        if (this.#fna(j) == -1) return this.#response("You're already carrying it.\n");
         if (this.#fna(j) != this.#miserState.cp) return this.#errorString51000();
         this.#miserState.ol[this.#miserState.pt[j]] = -1;
         this.#outputText += "Ok\n";
@@ -302,7 +302,7 @@ export default class MiserEngine {
                 // rPercent(5,3)=0 means EAST direction is unavailable, meaning the vault has not been found yet.
                 // So this means, 'If in Red-Walled Room and EAST direction unavailable, move the cabinet and find the vault'.
                 if (this.#miserState.cp == 5 && this.#miserState.rPercent[5][3] == 0) {
-                    // FV=Found Vault - Set to true
+                    // fv is Found Vault: Set it to true.
                     this.#miserState.fv = true;
                     this.#outputText += "Behind the cabinet is a vault!\n";
                     return this.#look();
@@ -478,7 +478,7 @@ export default class MiserEngine {
             // Carrying object omString[x]?  
             if (this.#miserState.ol[x] == -1) {
                 fi = 1;
-                this.#outputText += `${this.#miserState.omString[x]}\n`;
+                this.#outputText += `${MiserEngine.#omString[x]}\n`;
                 // Bucket full?
                 if (x == 1 && this.#miserState.bf) {
                     this.#outputText += "  The bucket is full of water.\n";
@@ -536,7 +536,7 @@ export default class MiserEngine {
         // Check for one of the 5 treasures
         switch (this.#miserState.pt[j]) {
             // One of the 5 treasures
-            // Remember that the value of pt[j] is an index into the omString[] array (om$() in original program).
+            // Remember that the value of pt[j] is an index into the omString array (om$() in original program).
             case 4:
             case 5:
             case 7:
@@ -578,12 +578,16 @@ export default class MiserEngine {
                     this.#miserState.gg = true;
                     // RUSTY CROSS becomes 'hidden' (-2) 
                     this.#miserState.ol[11] = -2;
-                    // Change room description from "chapel. A tablet says 'drop a religious item or die!!' to
-                    // simply "chapel", because the tablet disintegrates now.
-                    this.#miserState.rString[22] = "chapel";
+                    // "chapel. A tablet says 'drop a religious item or die!!' becomes simply "chapel".
+                    // rString array was directly modified here in the original source code.
+                    // This is now handled as a special case in the LOOK command, when in the chapel (index 22 in rString).
+                    // That way we can keep the rString array as static data that never changes, doesn't have to be saved/restored.
+                    // DON'T USE NOW: this.#miserState.rString[22] = "chapel";
                     // "organ in the corner" becomes "closed organ playing music in the corner"
-                    // omString array modified here.
-                    this.#miserState.omString[24] = "closed organ playing music in the corner";
+                    // omString array was directly modified here in the original source code.
+                    // This is now handled as a special case in the LOOK command, when in the ballroom.
+                    // That way we can keep the omString array as static data that never changes, doesn't have to be saved/restored.
+                    // DON'T USE NOW: this.#miserState.omString[24] = "closed organ playing music in the corner";
                     return this.#response("Even before it hits the ground, the cross fades away!\n\nThe tablet has disintegrated.\n\nYou hear music from the organ.\n");
                 }
                 break;
@@ -840,13 +844,25 @@ export default class MiserEngine {
      */
     #look() {
         // Line 14000 - Print current position
-        this.#outputText += `\nYou are in the ${this.#miserState.rString[this.#miserState.cp]}.\n`;
+        let cp = this.#miserState.cp;
+        if ( cp == 22 && this.#miserState.gg) {
+            // If in chapel, and already dropped the cross, print a different room description.
+            this.#outputText += "\nYou are in the chapel.\n";
+        } else {
+            this.#outputText += `\nYou are in the ${MiserEngine.#rString[cp]}.\n`;
+        }
 
         // Lines 14010-14030 Print list of all objects at this location (CP variable)
         for (let x = 1; x < 29; x++) {
-            if (this.#miserState.ol[x] == this.#miserState.cp) {
-                // Object at this location (CP)
-                this.#outputText += `\nThere is a ${this.#miserState.omString[x]} here.\n`;
+            if (this.#miserState.ol[x] == cp) {
+                // Object found at this location (CP).
+
+                // Special case for the organ.
+                if ( x == 24 && this.#miserState.gg ) {
+                    this.#outputText += `\nThere is a closed organ playing music in the corner here.\n`;
+                } else {
+                    this.#outputText += `\nThere is a ${MiserEngine.#omString[x]} here.\n`;
+                }
                 // If the plastic bucket is here and it is full (BF=true).
                 if ((x == 1) && this.#miserState.bf) {
                     this.#outputText += "  The bucket is full of water.\n";
@@ -1069,6 +1085,13 @@ export default class MiserEngine {
     */
     #score() {
         this.#outputText += `Your current score is: ${this.#miserState.gt * 20} points.\n(100 possible)\n`;
+        this.#outputText += `\nYour rank is: ${MiserEngine.#rank[this.#miserState.gt]}\n`;
+        let ranksLeft = (MiserEngine.#rank.length-1) - this.#miserState.gt;
+        if ( ranksLeft == 1) {
+            this.#outputText += "  (There is only one rank left for you to achieve!)\n";
+        } else {
+            this.#outputText += `  (There are ${ranksLeft} more ranks you can achieve.\n`;
+        }
         return this.#response(this.#outputText);
     }
 
@@ -1507,6 +1530,92 @@ export default class MiserEngine {
         "<Grandmaster Adventurer>"
     ];
 
+    static #omString = [
+        "",  // om$ begins at 1 in the original program. Setting index 0 to "" here.
+        "plastic bucket",
+        "vicious snake",
+        "charmed snake",
+        "*golden leaf*",
+        "*bulging moneybag*",
+        ">$<",
+        "*diamond ring*",
+        "*rare painting*",
+        "sword",
+        "mat",
+        "rusty cross",
+        "penny",
+        "piece of paper",
+        "parachute with no ripcord",
+        "oriental rug",
+        "trapdoor marked 'danger'",
+        "parachute ripcord",
+        "portal in the north wall",
+        "pair of *ruby slippers*",
+        "brass door key",
+        "majestic staircase leading up",
+        "majestic staircase leading down",
+        "battered book",
+        "organ in the corner",
+        "open organ in the corner",
+        "cabinet on rollers against one wall over",
+        "repaired parachute",
+        "sign saying 'drop coins for luck'",
+    ];
+
+    static #rString = [
+        "front porch",
+        "Foyer to a large house. Dust is everywhere",
+        "Great Hall. Suits of armor line the walls",
+        "Breakfast Room. It is bright and cheery",
+        "Conservatory. Through a window you see a hedge-maze",
+        "Red-Walled Room",
+        "Formal Parlor",
+        "Green Drawing Room",
+        "Trophy Room. Animal heads line the walls",
+        "Den",
+        "Blue Drawing Room",
+        "Library. Empty shelves line the walls",
+        "Dining Room",
+        "Chinese Room",
+        "$",
+        "Kitchen. It is bare",
+        "Pantry. Dust covers the mahogany shelves",
+        "Game Room",
+        "Smoking Room. The air is stale in here",
+        "Portico. A murky pool glimmers on the south side",
+        "Hall Of Mirrors - a good place to reflect",
+        "Ballroom. It has a beautiful wood dance floor",
+        "Chapel. A tablet says 'Drop a religious item or die!!'",
+        "back yard",
+        "back yard",
+        "Pool Area. There is a large swimming pool here",
+        "Pump House. There is pool machinery installed here",
+        "middle of the Western Hallway",
+        "West Bedroom",
+        "Front Balcony. There is a large road below",
+        "$",
+        "Master Bedroom. There's a huge four-poster bed",
+        "Rear Balcony. Below you see a Hedge Maze",
+        "East Bedroom",
+        "Closet",
+        "Junction of the West Hallway and the North-South Hallway",
+        "Center of the North-South Hallway",
+        "Junction of the East Hallway and the North-South Hallway",
+        "Middle of the East Hallway",
+        "South end of the East Hallway",
+        "hedge maze",
+        "hedge maze",
+        "hedge maze",
+        "hedge maze",
+        "hedge maze",
+        "hedge maze",
+        "walk-in Vault",
+        "Dungeon. There is light above and to the south",
+        "bottom of the Swimming Pool. A ladder leads up and out"
+    ];
+
+    /* #####  End of STATIC DATA  ###### */
+
     /* ###### Variable Game State Data ###### */
 
     /** 
@@ -1617,104 +1726,14 @@ export default class MiserEngine {
             19
         ],
 
-        // omString[24] gets modified based on gg variable.
-        // This entire array should not be saved in miserState.
-        // It should be a diff with the default state.
-
-        omString: [
-            "",     // om$ begins at 1 in the original program. Setting index 0 to "" here.
-            "plastic bucket",
-            "vicious snake",
-            "charmed snake",
-            "*golden leaf*",
-            "*bulging moneybag*",
-            ">$<",
-            "*diamond ring*",
-            "*rare painting*",
-            "sword",
-            "mat",
-            "rusty cross",
-            "penny",
-            "piece of paper",
-            "parachute with no ripcord",
-            "oriental rug",
-            "trapdoor marked 'danger'",
-            "parachute ripcord",
-            "portal in the north wall",
-            "pair of *ruby slippers*",
-            "brass door key",
-            "majestic staircase leading up",
-            "majestic staircase leading down",
-            "battered book",
-            "organ in the corner",
-            "open organ in the corner",
-            "cabinet on rollers against one wall over",
-            "repaired parachute",
-            "sign saying 'drop coins for luck'"
-        ],
-
-        // Room and place descriptions.
-        // rString[22], the chapel room, gets modified!  
-        // This entire array should not be saved in miserState.
-        // It should be a diff with the default state.
-        
-        rString: [
-            "front porch",
-            "Foyer to a large house. Dust is everywhere",
-            "Great Hall. Suits of armor line the walls",
-            "Breakfast Room. It is bright and cheery",
-            "Conservatory. Through a window you see a hedge-maze",
-            "Red-Walled Room",
-            "Formal Parlor",
-            "Green Drawing Room",
-            "Trophy Room. Animal heads line the walls",
-            "Den",
-            "Blue Drawing Room",
-            "Library. Empty shelves line the walls",
-            "Dining Room",
-            "Chinese Room",
-            "$",
-            "Kitchen. It is bare",
-            "Pantry. Dust covers the mahogany shelves",
-            "Game Room",
-            "Smoking Room. The air is stale in here",
-            "Portico. A murky pool glimmers on the south side",
-            "Hall Of Mirrors - a good place to reflect",
-            "Ballroom. It has a beautiful wood dance floor",
-            "Chapel. A tablet says 'Drop a religious item or die!!'",
-            "back yard",
-            "back yard",
-            "Pool Area. There is a large swimming pool here",
-            "Pump House. There is pool machinery installed here",
-            "middle of the Western Hallway",
-            "West Bedroom",
-            "Front Balcony. There is a large road below",
-            "$",
-            "Master Bedroom. There's a huge four-poster bed",
-            "Rear Balcony. Below you see a Hedge Maze",
-            "East Bedroom",
-            "Closet",
-            "Junction of the West Hallway and the North-South Hallway",
-            "Center of the North-South Hallway",
-            "Junction of the East Hallway and the North-South Hallway",
-            "Middle of the East Hallway",
-            "South end of the East Hallway",
-            "hedge maze",
-            "hedge maze",
-            "hedge maze",
-            "hedge maze",
-            "hedge maze",
-            "hedge maze",
-            "walk-in Vault",
-            "Dungeon. There is light above and to the south",
-            "bottom of the Swimming Pool. A ladder leads up and out"
-        ],
-
-        // This entire array should not be saved in miserState.
-        // It should be a diff with the default state.
+        // This entire array is being saved in MiserState.
+        // Most of this array is static data, but 3 rooms are modified in the original source code.
         // rPercent[5][3] gets modified. (Red-walled room. East becomes 46, to go into vault. )
         // rPercent[8][1] gets modified. (Trophy room. North becomes 17, to go to Game Room. )
         // rPercent[21][3] gets modified. (Ballroom. East becomes 22, to go to Chapel.)
+        //
+        // I thought someone might want to add additional floors, rooms, or portals that would require
+        // updating even more of these arrays, so I'm treating them all as dynamic/changing/must-save for now.
         //
         rPercent: [
             [0, 1, 0, 0, 0],
@@ -1766,7 +1785,7 @@ export default class MiserEngine {
             [0, 0, 0, 0, 5],
             [0, 0, 40, 0, 0],
             [0, 0, 0, 0, 0]
-        ],
+        ]
     }
     // End of MiserEngine class.
 }
@@ -1791,8 +1810,6 @@ export default class MiserEngine {
  * @property {boolean} gg Got God? [I mean, it is related to the 'drop a religious item or die' and the cross...]
  * @property {number[]} ol Object location array.
  * @property {number[]} pt Object pointer array.
- * @property {string[]} omString Object Moniker string array.
- * @property {string[]} rString Room descriptions. cp = an index number into this array.
  * @property {Array<number[]>} rPercent Rooms map - N S E W. (new int[49,5])
  */
 
