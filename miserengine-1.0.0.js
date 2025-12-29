@@ -97,23 +97,23 @@ export default class MiserEngine {
         let stringIndex = 0;
         let nextWordStartIndex = 0;
         let words = [];
-        // playerInput was trimmed above, so the first character will not be a space here.
+        // The following will remove leading spaces, spaces between words, and trailing spaces.
         do {
-            if (playerInput.charAt(stringIndex) === ' ') {
-                // JavaScript substring doesn't include the stringIndex ending character,
-                // which is pointing at space here.
-                // 'push' just adds the word to the words string array (words[]).
-                words.push(playerInput.substring(nextWordStartIndex, stringIndex));
-                // Move to next character after the space.
-                nextWordStartIndex = stringIndex + 1;
+            if ( playerInput.charAt(stringIndex) === ' ' ) {
+                if ( stringIndex > nextWordStartIndex) {
+                    words.push(playerInput.substring(nextWordStartIndex, stringIndex));
+                }
+                stringIndex++
+                nextWordStartIndex = stringIndex;
+                continue;
             }
             stringIndex++;
         } while (stringIndex < playerInput.length);
-
         // Get the final word, which might be the entire string if there were no spaces in it.
-        // JavaScript substring called without an end index will return a string from the given
-        // start position to the end of the string.
-        words.push(playerInput.substring(nextWordStartIndex));
+        // JavaScript substring does not include the character at the end index (stringIndex here).
+        if ( stringIndex > nextWordStartIndex ) {
+            words.push(playerInput.substring(nextWordStartIndex, stringIndex));
+        }
         //
         // End tokenizer.
 

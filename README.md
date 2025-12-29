@@ -5,18 +5,18 @@ JavaScript port of the Miser text adventure game that was originally released in
 
 1. git clone https://github.com/KristinaRC/MiserJS.git
 2. cd MiserJS
-3. node miserjs
+3. node miserjs-{version}.js where version is x.y.z 
 
 You're now playing the game as it was on the PET back in 1981.
 
 I've added a few commands you can type at the prompt  
 to support saving and restoring the game state:
 
-`save` will save the game state to 'miser-savegame.txt'.  
-`load` will load the game state from 'miser-savegame.txt'.  
+`save` will save the game state to 'miserjs-savegame.txt'.  
+`load` will load the game state from 'miserjs-savegame.txt'.  
 `quit` will just exit the game without saving anything.
 
-Type `score` to see the points update.
+Type `score` to see current points and rank.
 
 ### Speed Run
 
@@ -31,7 +31,7 @@ a file named `speedrun-output.txt`.
 ### Using the MiserEngine in your own front-end.
 
 ```
-import MiserEngine from './miserengine.js';
+import MiserEngine from './miserengine-{version}.js'; (x.y.z for version)  
 miserEngine = new MiserEngine();
 // Start a new game.
 response = miserEngine.newGame();
@@ -68,11 +68,11 @@ write it to a local file.
 I used the solution files found at The Classic Adventures Solution Archive  
 for the speedrun-commands.txt file.
 
-Those files were provided by:  
-Rene van Hasselaar  
-Dennis Janssen  
-Marco van Slageren  
-'Alex' (username at CASA)  
+<u>Those files were provided by:</u>  
+**Rene van Hasselaar**  
+**Dennis Janssen**  
+**Marco van Slageren**  
+**'Alex'** (username at CASA)  
 
 ## Other ports
 **Tom Croley** did a PC port of Miser in 1983.  

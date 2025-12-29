@@ -29,6 +29,10 @@ class MiserJS {
     async play() {
         let response;
         response = this.#miserEngine.newGame();
+        // Could also restore a previously saved game.
+        // let jsonData =  await readFile(this.#SAVEGAME_FILENAME, 'utf8');
+        // this.#miserState = JSON.parse(jsonData);
+        // console.log('Game restored.');
         this.#miserState = response.miserState;
         console.log(response.text);
         this.#rl = readline.createInterface({ input, output });
@@ -101,7 +105,6 @@ class MiserJS {
         await outputFile.close();
     }
 }
-
 
 let miserJS = new MiserJS();
 
