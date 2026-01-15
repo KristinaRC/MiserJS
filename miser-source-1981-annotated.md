@@ -351,7 +351,7 @@ j = object index in o$()
 4060 if cp=0 and du then print "it's already open.":goto 700
 4070 if cp<>6 then 51000
 // Open trapdoor.
-// This could be a bug. You can open the trapdoor before you move the\
+// This could be a bug. You can open the trapdoor before you move the
 // oriental rug to reveal it.
 // Maybe there should be a ft (Found Trapdoor) variable to check for this?
 // All versions of this program that followed have it this way.
@@ -457,9 +457,9 @@ i = 10 which means v$(10) or "drop"
 ```
 BUG: If you try to DROP one of the objects that has
 a -1 in the PT%(J) value, it will result in a
-“?ILLEGAL QUANTITY ERROR IN LINE 8000”. The program will end,
+“?ILLEGAL QUANTITY ERROR IN  8000”. The program will end,
 and the Commodore Basic CONT (continue) command will not work
-to continue the game.
+to continue the game. (GOTO 14000 will work to keep playing.)
 Valve, Ladder, Door, Cabinet,Ritnew, Victory, Organ, Stairs,
 Vault, Pool, Xyzzy, Plugh
 There are checks for a -1 in PT%(J) during processing of several

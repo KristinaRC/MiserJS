@@ -1,6 +1,25 @@
 # MiserJS
 JavaScript port of the Miser text adventure game that was originally released in 1981 for the Commodore PET series of computers.
 
+This is not an emulator or interpreter. The logic has been converted to modern JavaScript and will run natively in Node.js or a web browser.
+
+The game state is returned in a simple JavaScript object after every player input. This allows for saving that object as a JSON
+string to anywhere that can accept string data: local file, browser local storage, a database field, Memcached, Redis, etc.
+
+This allows for a 'Miser session', similar to the stateless HTTP request-response cycle.
+The game can be resumed later by including the previously saved MiserState object in the request.
+
+I wrote this while thinking the code could provide someone with a starting point for their own text adventure game, or a variation
+on Miser with additional rooms, floors, outdoor locations, etc. This is the reason why the code may seem overly commented. I wanted
+to be as helpful as possible to someone relatively new to programming, or someone porting it to their own preferred language.
+
+There are many ways to code a game like this more efficiently, in many different languages. Back when Mary wrote the original code,
+she only had 16,384 bytes to work with, and much of that was character byte data. A freshly loaded game on a PET 4016 had a little less
+than 400 bytes free. And of course it was BASIC, with a limited set of keywords and functions.
+
+The fun part is coming up with a new way to implement an old-school BASIC text adventure game in a modern language, for computers
+that should never 'busy wait' for player input. This could be a great exercise for students.
+
 ## Quick Start
 
 1. git clone https://github.com/KristinaRC/MiserJS.git
@@ -31,10 +50,16 @@ a file named `speedrun-output.txt`.
 ### Using the MiserEngine in your own front-end.
 
 ```
-import MiserEngine from './miserengine-{version}.js'; (x.y.z for version)  
-miserEngine = new MiserEngine();
+import MiserEngine from './miserengine-{version}.js'; // (x.y.z for version)
+// Next is a JSDoc import statement for the object typedefs defined in MiserEngine.
+// These will show the object properties and descriptions in your
+// JavaScript IDE. (VS Code, WebStorm, Atom, etc.)
+/** @import {MiserState, MiserResponse} from './miserengine-{version}.js' */
+
+let miserEngine = new MiserEngine();
 // Start a new game.
-response = miserEngine.newGame();
+let response = miserEngine.newGame();
+
 // response will have a fresh MiserState object and  
 // output text from the Miser 'look' verb/command.
 //
@@ -46,7 +71,7 @@ response = miserEngine.newGame();
 // N 
 
 // Save the returned MiserState in a variable.
-miserState = response.miserState
+let miserState = response.miserState;
 
 // Get input line (string) from player.
 
@@ -143,3 +168,15 @@ I created a 'Miser Engine' which is stateless. The front-end can be anything you
 I never published an NPM package before, so I'll have to learn that to make it easy to `npm install` in `node_modules`.
 
 The ***Classic Adventures Solution Archive*** (https://solutionarchive.com/game/id%2C359/Miser.html), has more information about *Miser*, including other ports, maps, and a few game solution files.
+
+### Article excerpt
+
+[***COMPUTE!***, October 1982, Issue 29, Page 137 (archive.org, direct to page)](https://archive.org/details/1982-10-compute-magazine/page/137/mode/1up)  
+Review: CURSOR: Issues 23 Through 28  
+Marlene R. Pratto  
+Greensboro, NC  
+
+"One of the most congenial programs from these CURSOR issues is Miser, an adventure game. Miser was played continuously for two months at Erwin Open School, where it was the topic of both intense and casual conversations. Children exchanged information about what was hidden where. They used a thesaurus to look up alternative words when they could not make the computer take action. Some people think that personal computers will lead to fewer human conversations, but this program resulted in much conversation and cooperation.
+
+Perhaps adventure style games have benefits beyond the social involvement and program solving. Because Miser and other adventure games have a restricted set of words that they understand, the player may know what to do, but not how to make the computer do it. This is similar to learning a programming language. The potential programmer may know what he/she wants the computer to do, but he/she must learn the words of the programming language used. Each computer language is a small subset of the language that humans know."
+
