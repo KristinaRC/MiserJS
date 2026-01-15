@@ -109,7 +109,8 @@ for the speedrun-commands.txt file.
 
 *Miser* was programmed in Commodore PET BASIC, by Mary Jean Winter, and released in August 1981 as one of the programs featured in *CURSOR* cassette magazine, Issue #27 [(Direct to PDF, Page 63 at archive.org)](https://archive.org/download/cursor-issues/Cursor_Issues.pdf#page=63).
 
-The printed cover sheet that came with the CURSOR #27 cassette shows Mary Jean Winter as the author of Miser.
+The printed cover sheet that came with the CURSOR #27 cassette shows Mary Jean Winter as the author of Miser.  
+[( See it here, at archive.org. )](https://archive.org/details/Cursor_Issue_01_thru_30/page/n62/mode/1up)
 
 The BASIC program source code, at line 62005, mistakenly credited ***M.J. Lansing*** as the author, and this was shown on the title screen.
 
