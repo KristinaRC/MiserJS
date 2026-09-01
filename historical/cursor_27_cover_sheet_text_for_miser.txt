@@ -1,0 +1,29 @@
+Miser was released in August, 1981 as part of CURSOR Magazine, Issue #27.
+
+The description in the magazine includes two sections.
+
+---------------------------------------
+First Section:
+---------------------------------------
+
+MISER - Can you find all the treasure while you explore all the rooms? (Needs 16k) By Mary Jean Winter
+ Edited by Andy Stadler.
+
+
+----------------------------------------
+Second Section: (Edited by Andy Stadler)
+----------------------------------------
+
+MISER (Requires 16k machine.) MISER 'tis the game of Adventure, and will keep
+you occupied many an hour. There is treasure to find, and danger to avoid. We
+will only tell you a few of the commands, since discovering the commands is part
+of the charm of the game.
+
+You move by typing "N" to go North, "S" to go South, etc. To find out what all
+you are carrying, give the "Inven" command. And to get your current score, type
+"Score".
+
+Dedicated MISER freaks construct a map as they play so they know where they
+have been. And they are willing to try lots of different possible commands,
+just to see what the stupid machine really wants them to say. And they get
+rather excited when they think they've solved the puzzle.

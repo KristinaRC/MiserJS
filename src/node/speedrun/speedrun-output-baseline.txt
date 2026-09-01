@@ -1,0 +1,699 @@
+
+You are in the front porch.
+
+There is a mat here.
+
+Obvious Exits:
+N 
+
+>> Get mat
+Ok
+You find a door key!
+
+>> Get key
+Ok
+
+>> Unlock door
+The door easily unlocks and swings open.
+
+You are in the front porch.
+
+An open door leads north.
+
+Obvious Exits:
+N 
+
+>> N
+The door slams shut behind you!
+
+You are in the Foyer to a large house. Dust is everywhere.
+
+Obvious Exits:
+N W 
+
+>> W
+
+You are in the Dining Room.
+
+Obvious Exits:
+E W 
+
+>> W
+
+You are in the Chinese Room.
+
+There is a sword here.
+
+Obvious Exits:
+N E 
+
+>> Get sword
+Ok
+
+>> N
+
+You are in the Kitchen. It is bare.
+
+Obvious Exits:
+N S E 
+
+>> N
+
+You are in the back yard.
+
+There is a rusty cross here.
+
+There is a leaky faucet nearby.
+
+Obvious Exits:
+N S E W 
+
+>> Get cross
+Ok
+
+>> W
+
+You are in the Pool Area. There is a large swimming pool here.
+
+The pool is full of liquid mercury!
+
+Obvious Exits:
+N E 
+
+>> N
+
+You are in the Pump House. There is pool machinery installed here.
+
+There is a plastic bucket here.
+
+There is a valve on one of the pipes.
+
+Obvious Exits:
+S 
+
+>> Get bucket
+Ok
+
+>> Turn valve
+With much effort, you turn the valve 5 times. You hear the sound of liquid
+flowing through the pipes.
+
+>> S
+
+You are in the Pool Area. There is a large swimming pool here.
+
+The pool's empty.
+
+I see something shiny in the pool!
+
+Obvious Exits:
+N E 
+
+>> Go pool
+
+You are in the bottom of the Swimming Pool. A ladder leads up and out.
+
+There is a *diamond ring* here.
+
+>> Get ring
+Ok
+You got a treasure!
+
+>> Go ladder
+
+You are in the Pool Area. There is a large swimming pool here.
+
+The pool's empty.
+
+Obvious Exits:
+N E 
+
+>> E
+
+You are in the back yard.
+
+There is a leaky faucet nearby.
+
+Obvious Exits:
+N S E W 
+
+>> Fill bucket
+Your bucket is now full.
+
+>> E
+
+You are in the hedge maze.
+
+Obvious Exits:
+S W 
+
+>> S
+
+You are in the hedge maze.
+
+Obvious Exits:
+N S E 
+
+>> N
+
+You are in the hedge maze.
+
+Obvious Exits:
+N S 
+
+>> N
+
+You are in the hedge maze.
+
+Obvious Exits:
+S W 
+
+>> W
+
+You are in the hedge maze.
+
+There is a *golden leaf* here.
+
+Obvious Exits:
+E 
+
+>> Get leaf
+Ok
+You got a treasure!
+
+>> E
+
+You are in the hedge maze.
+
+Obvious Exits:
+S W 
+
+>> S
+
+You are in the hedge maze.
+
+Obvious Exits:
+N S E 
+
+>> E
+
+You are in the hedge maze.
+
+Obvious Exits:
+N S 
+
+>> S
+
+You are in the back yard.
+
+There is a leaky faucet nearby.
+
+Obvious Exits:
+N S E W 
+
+>> S
+
+You are in the Kitchen. It is bare.
+
+Obvious Exits:
+N S E 
+
+>> E
+
+You are in the Pantry. Dust covers the mahogany shelves.
+
+A rich, full voice says, 'Ritnew is a charming word'.
+
+Obvious Exits:
+E W 
+
+>> E
+
+You are in the Breakfast Room. It is bright and cheery.
+
+Obvious Exits:
+S E W 
+
+>> S
+
+You are in the Great Hall. Suits of armor line the walls.
+
+There is a majestic staircase leading up here.
+
+Obvious Exits:
+N S 
+
+>> Go staircase
+The suits of armor try to stop you, but you fight them off with your sword.
+
+You are in the middle of the Western Hallway.
+
+There is a majestic staircase leading down here.
+
+Obvious Exits:
+N E W 
+
+>> W
+
+You are in the West Bedroom.
+
+There is a penny here.
+
+Obvious Exits:
+E 
+
+>> Get penny
+Ok
+
+>> E
+
+You are in the middle of the Western Hallway.
+
+There is a majestic staircase leading down here.
+
+Obvious Exits:
+N E W 
+
+>> E
+
+You are in the Master Bedroom. There's a huge four-poster bed.
+
+There is a piece of paper here.
+
+Obvious Exits:
+E W 
+
+>> Get paper
+Ok
+
+>> Read paper
+It says, '12-35-6'.
+hmm.. looks like a combination.
+
+>> W
+
+You are in the middle of the Western Hallway.
+
+There is a majestic staircase leading down here.
+
+Obvious Exits:
+N E W 
+
+>> Go staircase
+
+You are in the Great Hall. Suits of armor line the walls.
+
+There is a majestic staircase leading up here.
+
+Obvious Exits:
+N S 
+
+>> N
+
+You are in the Breakfast Room. It is bright and cheery.
+
+Obvious Exits:
+S E W 
+
+>> E
+
+You are in the Conservatory. Through a window you see a hedge-maze.
+
+There is a vicious snake here.
+
+Obvious Exits:
+S E W 
+
+>> Say ritnew
+The snake is charmed by the very utterance of your words.
+
+>> S
+
+You are in the Red-Walled Room.
+
+There is a cabinet on rollers against one wall over here.
+
+Obvious Exits:
+N S 
+
+>> Open cabinet
+The cabinet is empty and dusty.
+Scribbled in dust on one shelf are the words, 'behind me'.
+
+>> Move cabinet
+Behind the cabinet is a vault!
+
+You are in the Red-Walled Room.
+
+There is a cabinet on rollers against one wall over here.
+
+There is a vault in the east wall.
+
+Obvious Exits:
+N S 
+
+>> Unlock vault
+Ok, let's see. 12..35..6..
+<CLICK!> The door swings open.
+You are in the Red-Walled Room.
+
+There is a cabinet on rollers against one wall over here.
+
+There is a vault in the east wall.
+The vault is open.
+
+Obvious Exits:
+N S E 
+
+>> E
+
+You are in the walk-in Vault.
+
+There is a *bulging moneybag* here.
+
+Obvious Exits:
+W 
+
+>> Get bag
+Ok
+You got a treasure!
+
+>> W
+
+You are in the Red-Walled Room.
+
+There is a cabinet on rollers against one wall over here.
+
+There is a vault in the east wall.
+The vault is open.
+
+Obvious Exits:
+N S E 
+
+>> S
+
+You are in the Formal Parlor.
+
+There is a oriental rug here.
+
+Obvious Exits:
+N E 
+
+>> E
+
+You are in the Blue Drawing Room.
+
+There is a hot fire on the south wall!
+If I go that way I'll burn to death!
+
+Obvious Exits:
+S E W 
+
+>> Pour bucket
+Congratulations! You have vanquished the flames.
+
+You are in the Blue Drawing Room.
+
+There is evidence of a recent fire here.
+
+Obvious Exits:
+S E W 
+
+>> S
+
+You are in the Library. Empty shelves line the walls.
+
+There is a battered book here.
+
+Obvious Exits:
+N 
+
+>> Get book
+Ok
+
+>> Open book
+Scrawled in blood on the inside front cover is the message, "'Victory' is a prize-winning word".
+
+>> N
+
+You are in the Blue Drawing Room.
+
+There is evidence of a recent fire here.
+
+Obvious Exits:
+S E W 
+
+>> E
+
+You are in the Den.
+
+Obvious Exits:
+N W 
+
+>> N
+
+You are in the Trophy Room. Animal heads line the walls.
+
+Obvious Exits:
+S W 
+
+>> Say victory
+A portal has opened in the north wall!!
+
+>> N
+
+You are in the Game Room.
+
+Obvious Exits:
+S W 
+
+>> W
+
+You are in the Smoking Room. The air is stale in here.
+
+Obvious Exits:
+N E W 
+
+>> W
+
+You are in the Portico. A murky pool glimmers on the south side.
+
+There is a sign saying 'drop coins for luck' here.
+
+Obvious Exits:
+N E W 
+
+>> Drop penny
+As the penny sinks below the surface of the pool, a fleeting image of a chapel with dancers outside appears.
+
+>> N
+
+You are in the Ballroom. It has a beautiful wood dance floor.
+
+There is a organ in the corner here.
+
+Obvious Exits:
+S E W 
+
+>> E
+
+You are in the Chapel. A tablet says 'Drop a religious item or die!!'.
+
+Obvious Exits:
+W 
+
+>> Drop cross
+Even before it hits the ground, the cross fades away!
+
+The tablet has disintegrated.
+
+You hear music from the organ.
+
+>> W
+
+You are in the Ballroom. It has a beautiful wood dance floor.
+
+There is a closed organ playing music in the corner here.
+
+Obvious Exits:
+S E W 
+
+>> Open organ
+As you open it, several objects suddenly appear!
+
+You are in the Ballroom. It has a beautiful wood dance floor.
+
+There is a parachute ripcord here.
+
+There is a pair of *ruby slippers* here.
+
+There is a open organ in the corner here.
+
+Obvious Exits:
+S E W 
+
+>> Get slippers
+Ok
+You got a treasure!
+
+>> Get ripcord
+Ok
+
+>> S
+
+You are in the Portico. A murky pool glimmers on the south side.
+
+There is a sign saying 'drop coins for luck' here.
+
+Obvious Exits:
+N E W 
+
+>> E
+
+You are in the Smoking Room. The air is stale in here.
+
+Obvious Exits:
+N E W 
+
+>> E
+
+You are in the Game Room.
+
+Obvious Exits:
+S W 
+
+>> S
+
+You are in the Trophy Room. Animal heads line the walls.
+
+There is a portal in the north wall here.
+
+Obvious Exits:
+N S W 
+
+>> W
+
+You are in the Green Drawing Room.
+
+Obvious Exits:
+E W 
+
+>> W
+
+You are in the Conservatory. Through a window you see a hedge-maze.
+
+There is a charmed snake here.
+
+Obvious Exits:
+S E W 
+
+>> W
+
+You are in the Breakfast Room. It is bright and cheery.
+
+Obvious Exits:
+S E W 
+
+>> S
+
+You are in the Great Hall. Suits of armor line the walls.
+
+There is a majestic staircase leading up here.
+
+Obvious Exits:
+N S 
+
+>> Go staircase
+The suits of armor try to stop you, but you fight them off with your sword.
+
+You are in the middle of the Western Hallway.
+
+There is a majestic staircase leading down here.
+
+Obvious Exits:
+N E W 
+
+>> E
+
+You are in the Master Bedroom. There's a huge four-poster bed.
+
+Obvious Exits:
+E W 
+
+>> E
+
+You are in the Middle of the East Hallway.
+
+Obvious Exits:
+N S E W 
+
+>> E
+
+You are in the East Bedroom.
+
+Obvious Exits:
+N W 
+
+>> N
+
+You are in the Closet.
+
+There is a parachute with no ripcord here.
+
+Obvious Exits:
+S 
+
+>> Get parachute
+Ok
+
+>> Fix parachute
+I'm no expert, but I think it'll work.
+
+>> S
+
+You are in the East Bedroom.
+
+Obvious Exits:
+N W 
+
+>> W
+
+You are in the Middle of the East Hallway.
+
+Obvious Exits:
+N S E W 
+
+>> S
+
+You are in the South end of the East Hallway.
+
+There is a *rare painting* here.
+
+Obvious Exits:
+N S 
+
+>> Get painting
+Ok
+You got a treasure!
+
+>> S
+
+You are in the Front Balcony. There is a large road below.
+
+Obvious Exits:
+N 
+
+>> Jump
+You jump...
+You yank the ripcord and the
+'chute comes billowing out.
+You land safely.
+
+Congratulations on escaping!
+
+You accumulated 5 treasures, 
+ for a score of 100 points.
+(100 Possible)
+
+This puts you in a class of:
+<Grandmaster Adventurer>

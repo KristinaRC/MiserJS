@@ -1,0 +1,39 @@
+MISER 
+
+By Mary Jean Winter 
+
+Rumor has it that there's a lot of valuable trea- 
+sure in the house where the old miser used to 
+live. Think of it â€” all that treasure lying 
+around waiting to be claimed. Surely it's worth trying 
+to find! 
+
+After you play this adventure game, you may live 
+to regret the idea of searching for the treasure. Or, 
+perhaps, you may not live to regret it. Strange things 
+await you in the old miser's house, the likes of which 
+you've never encountered. Remember, many have 
+gone in after the rumored "treasure," but few have 
+come out again. 
+
+Once the program starts, give it one- or two-word 
+commands, such as NORTH, or SHOOT AARD- 
+VARK. (As there are no guns or aardvarks in the 
+house, we're not giving anything away.) Some other 
+useful commands: INVEN tells you what you're car- 
+rying; SCORE tells you your current score; LOOK 
+describes the room you're in; and QUIT ends the 
+game. 
+
+To move, give directions such as GO WEST, 
+WEST, or even just W. All commands must have the 
+form: verb, noun. 
+
+Keep a map of where you've been, in case you 
+forget your way. Try synonyms for words since the 
+author may not have thought of the word you'd use, 
+and most important, don't assume that an object is 
+useless just because it looks that way. You can read 
+the program for the solution, but that's cheating. 
+Besides, the program is so complicated that it's 
+almost easier to solve than it is to understand. 

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "browser",
+    "description": "MiserJS Engine for running in the browser.",
+    "domainRoot": false,
+    "baseHref": false,
+    "isPWA": false,
+    "files": [
+      {
+        "srcPath": "src/engine/miserjs-engine.js",
+        "distPath": "dist/browser/miserjs-engine-{version}.js",
+        "specialCaseMatches": false,
+        "minify": true,
+        "compress": true,
+        "pwaCache": false
+      }
+    ]
+  },
+  {
+    "name": "node",
+    "description": "Code to run directly via Node, on the command line.",
+    "domainRoot": false,
+    "baseHref": false,
+    "isPWA": false,
+    "files": [
+      {
+        "srcPath": "src/node/miserjs-node.js",
+        "distPath": "dist/node/miserjs-node.js",
+        "specialCaseMatches": false,
+        "minify": false,
+        "compress": false,
+        "pwaCache": false
+      },
+      {
+        "srcPath": "src/engine/miserjs-engine.js",
+        "distPath": "dist/node/miserjs-engine.js",
+        "specialCaseMatches": [
+          {
+            "regex": "import.+?from",
+            "basePathReplaceType": "relativeWithDots"
+          }
+        ],
+        "minify": false,
+        "compress": false,
+        "pwaCache": false
+      },
+      
+      {
+        "srcPath": "src/node/speedrun/speedrun-commands.txt",
+        "distPath": "dist/node/speedrun/speedrun-commands.txt",
+        "specialCaseMatches": false,
+        "minify": false,
+        "compress": false,
+        "pwaCache": false
+      }
+    ]
+  }
+]
