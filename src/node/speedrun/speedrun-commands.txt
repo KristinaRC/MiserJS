@@ -93,4 +93,5 @@ W,
 S,
 Get painting,
 S,
-Jump
+Jump,
+Score

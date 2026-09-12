@@ -27,7 +27,7 @@
         "srcPath": "src/node/miserjs-node.js",
         "distPath": "dist/node/miserjs-node.js",
         "specialCaseMatches": false,
-        "minify": false,
+        "minify": true,
         "compress": false,
         "pwaCache": false
       },
@@ -40,7 +40,7 @@
             "basePathReplaceType": "relativeWithDots"
           }
         ],
-        "minify": false,
+        "minify": true,
         "compress": false,
         "pwaCache": false
       },

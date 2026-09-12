@@ -1,11 +1,11 @@
 'use strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { exit } from 'node:process';
+import zlib from 'node:zlib';
+import {exit} from 'node:process';
 import pc from 'picocolors';
 import { minify as terserMinify } from 'terser';
-import zlib from 'node:zlib';
-import /**@type {Build_Target[]}*/ targets from '../config/build-targets.json' with { type: 'json' };
+import targets from '../config/build-targets.json' with { type: 'json' };
 import packageJSON from '../package.json' with { type: 'json' };
 
 const __dirname = import.meta.dirname;
@@ -106,6 +106,7 @@ for (const buildTarget of targets) {
 
     // Read text or binary here into srcFinal.
     // Determine by extension.
+    // .ico files (binary) benefit greatly from brotli and gzip compression.
 
     if ( srcFiletype == 'text') {
       srcFinal = fs.readFileSync(file.srcPath, { encoding: 'utf8' });
@@ -113,12 +114,23 @@ for (const buildTarget of targets) {
       srcFinal = fs.readFileSync(file.srcPath, { encoding: 'binary' });
     }
 
+    // Todo: This is a temporary hack. 
     if ( buildTarget.name == 'browser' &&  path.basename(file.srcPath) == 'miserjs-engine.js') {
       console.group(pc.green('Special Browser build generation:'));
       // Modify source text in some way.
+      // Change MiserEngine to MiserJS.MiserEngine for the browser code.
       srcFinal  = srcFinal.replaceAll(/MiserEngine/gs, 'MiserJS.MiserEngine');
       srcFinal = srcFinal.replace(/^.*export default class MiserJS.MiserEngine/m, '// @ts-nocheck\nwindow.MiserJS = window.MiserJS || {};\n\nMiserJS.MiserEngine = class ');
       sourceScan = false;
+      console.groupEnd();
+    }
+
+    if (buildTarget.name == 'node' && path.basename(file.srcPath) == 'miserjs-node.js') {
+      console.group(pc.green('Special Node build generation:'));
+      // Modify source text in some way.
+      // Strip line: /** @import {MiserState, MiserResponse} from './miserjs-engine.min.js' */
+      srcFinal = srcFinal.replace(/^.*\/\*\*.*@import.*?\*\/$/m, '');
+      sourceScan = true;
       console.groupEnd();
     }
 

@@ -83,7 +83,7 @@ export default class MiserEngine {
     let playerInput = input;
     
     if (!playerInput) {
-      return this.#response('No input was provided.', false, true);
+      return this.#response('No input was provided.\n', false, true);
     }
 
     // Make sure leading and trailing white-space is deleted.
@@ -1065,7 +1065,7 @@ export default class MiserEngine {
     if (this.#miserState.cp == 10 && this.#miserState.fb) {
       this.#outputText += "You have burnt to a crisp!\n";
 
-      return this.#response(this.#outputText, true, true);
+      return this.#response(this.#outputText, MiserEngine.#GameOverReason.DIED);
     }
 
     const snakeAction = this.#checkSnake();
@@ -1118,9 +1118,16 @@ export default class MiserEngine {
   */
   #score() {
     this.#outputText += `Your current score is: ${this.#miserState.gt * 20} points.\n(100 possible)\n`;
-    this.#outputText += `\nYour rank is: ${MiserEngine.#rank[this.#miserState.gt]}\n`;
-    let ranksLeft = (MiserEngine.#rank.length - 1) - this.#miserState.gt;
-    if (ranksLeft == 1) {
+    let rank = this.#miserState.gt;
+    if (this.#miserState.es) {
+      rank++;
+    }
+
+    this.#outputText += `\nYour rank is: ${MiserEngine.#rank[rank]}\n`;
+    let ranksLeft = (MiserEngine.#rank.length - 1) - rank;
+    if (ranksLeft == 0) {
+      this.#outputText += "  (You have escaped with ALL available treasure!)\n";
+    } else if (ranksLeft == 1) {
       this.#outputText += "  (There is only one rank left for you to achieve!)\n";
     } else {
       this.#outputText += `  (There are ${ranksLeft} more ranks you can achieve.)\n`;
@@ -1321,7 +1328,7 @@ export default class MiserEngine {
       this.#outputText += `\nBetter luck next time!\n`;
     }
     
-    return this.#response(this.#outputText, true)
+    return this.#response(this.#outputText);
   }
 
   /**
@@ -1741,6 +1748,10 @@ export default class MiserEngine {
     "Swimming Pool"
   ];
 
+  /**
+   * @readonly
+   * @enum {string} 
+   */
   static #GameOverReason = Object.freeze({
     DIED: 'died',
     ESCAPED: 'escaped',
@@ -1947,15 +1958,9 @@ export default class MiserEngine {
  * @property {Array<number[]>} rPercent Rooms map - N S E W. (new int[49,5])
  */
 
-/** @typedef {Object} GameOverReason
- * @property {string} DIED
- * @property {string} ESCAPED
- * @property {string} QUIT
- */
-
 /**
  * @typedef {Object} MiserResponse
  * @property {string} text Text that will be displayed to the player.
- * @property {boolean|string} gameOver One of 'died', 'escaped', quit', or false.
- * @property {boolean|string} isError Error text will be in text property.
+ * @property {boolean|string} [gameOver=false] One of 'died', 'escaped', quit', or false.
+ * @property {boolean} [isError=false]  If true, Error text is in text property.
  */
