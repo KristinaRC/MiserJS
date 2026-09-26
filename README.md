@@ -1,5 +1,5 @@
 # MiserJS
-[![Clean Install, Build, Running All Tests](https://github.com/KristinaRC/MiserJS/actions/workflows/node.js.yml/badge.svg)](https://github.com/KristinaRC/MiserJS/actions/workflows/node.js.yml)
+[![Clean Install, Build, Running All Tests](https://github.com/KristinaRC/MiserJS/actions/workflows/ci_build_test.yml/badge.svg)](https://github.com/KristinaRC/MiserJS/actions/workflows/ci_build_test.yml)
 
 ## Play Online
 ![Screenshot of the MiserJS title screen.](https://github.com/user-attachments/assets/cf6ec7c3-139c-4568-8f7b-84a4031c7ad8 "Screenshot from MiserJS running in a web browser.")  
