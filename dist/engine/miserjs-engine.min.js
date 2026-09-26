@@ -11,9 +11,7 @@
  * rooms, floors, or objects.
  *  
  */
-window.MiserJS = window.MiserJS || {};
-
-MiserJS.MiserJSEngine = class {
+export default class MiserJSEngine{
 /**
    * This is where the response text is built, line by line, possibly from multiple methods.  
    * Usually there is some text followed by output from the LOOK command.
@@ -45,9 +43,9 @@ static#i=40;
    */
 constructor(t=null){
 // ToDo: Check for a valid MiserState object.
-this.#e=t||JSON.parse(JSON.stringify(MiserJS.MiserJSEngine.#n))}newGame(){
+this.#e=t||JSON.parse(JSON.stringify(MiserJSEngine.#n))}newGame(){
 // Deep copy the default state.
-this.#e=JSON.parse(JSON.stringify(MiserJS.MiserJSEngine.#n))}
+this.#e=JSON.parse(JSON.stringify(MiserJSEngine.#n))}
 /**
    * The primary method for playing the game.  
    * @param {string} input Player input text.
@@ -69,7 +67,7 @@ e=e.trim(),
      * Change this (above) if you add new commands or object names that would exceed this length.  
      * Default value: 40 characters for a "verb object" input line.  
      */
-e.length>MiserJS.MiserJSEngine.#i&&(e=e.substring(0,MiserJS.MiserJSEngine.#i))
+e.length>MiserJSEngine.#i&&(e=e.substring(0,MiserJSEngine.#i))
 /**
      * Simple tokenizer to get the words. 
      */;let s,r,i=0,n=0,o=[];
@@ -205,7 +203,7 @@ case 11:return this.#o("The front cover is inscribed in Greek.\n");default:retur
 // Carrying object omString[x]?  
 if(-1==this.#e.ol[e]){
 // Bucket full?
-if(t=1,this.#t+=`${MiserJS.MiserJSEngine.#D[e]}\n`,1==e&&this.#e.bf){this.#t+="  The bucket is full of water.\n";continue}14==e&&(this.#t+="  (Better fix it)\n")}
+if(t=1,this.#t+=`${MiserJSEngine.#D[e]}\n`,1==e&&this.#e.bf){this.#t+="  The bucket is full of water.\n";continue}14==e&&(this.#t+="  (Better fix it)\n")}
 // Found items?
 return 1==t?this.#o(this.#t):this.#o(this.#t+="Nothing at all.\n")}
 /**
@@ -219,7 +217,7 @@ return 1==t?this.#o(this.#t):this.#o(this.#t+="Nothing at all.\n")}
    */#g(){
 // Take special action for quit in the host program.
 // The host could use the method, this.showFinalOutcome, or combine it with a score display, or something else.
-return this.#o(this.#t,MiserJS.MiserJSEngine.#A.QUIT)}
+return this.#o(this.#t,MiserJSEngine.#A.QUIT)}
 /**
    * Case 10: Drop.  
    * Lines 8000-8221 in the original Miser program from 1981.
@@ -401,12 +399,12 @@ this.#e.rPercent[5][3]=46,this.#t+="Ok, let's see. 12..35..6..\n<CLICK!> The doo
 // Line 14000 - Print current position
 let t=this.#e.cp;22==t&&this.#e.gg?
 // If in chapel, and already dropped the cross, print a different room description.
-this.#t+="\nYou are in the chapel.\n":this.#t+=`\nYou are in the ${MiserJS.MiserJSEngine.#B[t]}.\n`;
+this.#t+="\nYou are in the chapel.\n":this.#t+=`\nYou are in the ${MiserJSEngine.#B[t]}.\n`;
 // Lines 14010-14030 Print list of all objects at this location (CP variable)
 for(let e=1;e<29;e++)this.#e.ol[e]==t&&(
 // Object found at this location (CP).
 // Special case for the organ.
-24==e&&this.#e.gg?this.#t+="\nThere is a closed organ playing music in the corner here.\n":this.#t+=`\nThere is a ${MiserJS.MiserJSEngine.#D[e]} here.\n`,
+24==e&&this.#e.gg?this.#t+="\nThere is a closed organ playing music in the corner here.\n":this.#t+=`\nThere is a ${MiserJSEngine.#D[e]} here.\n`,
 // If the plastic bucket is here and it is full (BF=true).
 1==e&&this.#e.bf&&(this.#t+="  The bucket is full of water.\n"));
 // Special actions depending on current position (CP)
@@ -483,7 +481,7 @@ this.#e.cp=48,this.#x());default:return this.#u()}}
    * CASE 19,20: South.  
    * Lines 17000 to 17050 in the original Miser program from 1981.  
    * @returns {MiserResponse}
-   */#I(){if(10==this.#e.cp&&this.#e.fb)return this.#t+="You have burnt to a crisp!\n",this.#o(this.#t,MiserJS.MiserJSEngine.#A.DIED);const t=this.#H();return null!=t?t:0==this.#e.rPercent[this.#e.cp][2]?this.#C():(this.#e.cp=this.#e.rPercent[this.#e.cp][2],this.#x())}
+   */#I(){if(10==this.#e.cp&&this.#e.fb)return this.#t+="You have burnt to a crisp!\n",this.#o(this.#t,MiserJSEngine.#A.DIED);const t=this.#H();return null!=t?t:0==this.#e.rPercent[this.#e.cp][2]?this.#C():(this.#e.cp=this.#e.rPercent[this.#e.cp][2],this.#x())}
 /**
   * CASE 21,22: East.  
   * There is a check for the snake every time the player tries to move East,  
@@ -500,7 +498,7 @@ this.#e.cp=48,this.#x());default:return this.#u()}}
   * CASE 25: Score.  
   * Lines 20000 to 20060 in the original Miser program from 1981.  
   * @returns {MiserResponse}
-  */#M(){this.#t+=`Your current score is: ${20*this.#e.gt} points.\n(100 possible)\n`;let t=this.#e.gt;this.#e.es&&t++,this.#t+=`\nYour rank is: ${MiserJS.MiserJSEngine.#$[t]}\n`;let e=MiserJS.MiserJSEngine.#$.length-1-t;return this.#t+=0==e?"  (You have escaped with ALL available treasure!)\n":1==e?"  (There is only one rank left for you to achieve!)\n":`  (There are ${e} more ranks you can achieve.)\n`,this.#o(this.#t)}
+  */#M(){this.#t+=`Your current score is: ${20*this.#e.gt} points.\n(100 possible)\n`;let t=this.#e.gt;this.#e.es&&t++,this.#t+=`\nYour rank is: ${MiserJSEngine.#$[t]}\n`;let e=MiserJSEngine.#$.length-1-t;return this.#t+=0==e?"  (You have escaped with ALL available treasure!)\n":1==e?"  (There is only one rank left for you to achieve!)\n":`  (There are ${e} more ranks you can achieve.)\n`,this.#o(this.#t)}
 /**
   * CASE 26: Turn.  
   * Only the VALVE can be turned.  
@@ -517,18 +515,18 @@ this.#e.pf=!this.#e.pf,this.#o("With much effort, you turn the valve 5 times. Yo
   * @returns {MiserResponse}
   */#R(){switch(this.#e.cp){case 27:
 // MIDDLE OF THE WESTERN HALLWAY
-return this.#t+="You jump...\n",this.#e.jm?(this.#t+="Now you've done it. You ignored\nmy warning, and as a result\nyou have broken your neck!\n\nYou are dead.",this.#o(this.#t,MiserJS.MiserJSEngine.#A.DIED)):(this.#e.jm=!0,this.#e.cp=2,this.#t+="You have landed down-stairs,\nand narrowly escaped serious\ninjury. Please don't try it again.\n",this.#x());case 29:case 32:
+return this.#t+="You jump...\n",this.#e.jm?(this.#t+="Now you've done it. You ignored\nmy warning, and as a result\nyou have broken your neck!\n\nYou are dead.",this.#o(this.#t,MiserJSEngine.#A.DIED)):(this.#e.jm=!0,this.#e.cp=2,this.#t+="You have landed down-stairs,\nand narrowly escaped serious\ninjury. Please don't try it again.\n",this.#x());case 29:case 32:
 // Next action depends on the three possible states of the parachute in the players inventory:
 //      1) No parachute. Not in inventory.
 //      2) Carrying the parachute that hasn't been fixed with the ripcord.
 //      3) Carrying a fully functional parachute.
 if(this.#t+="You jump...\n",-1==this.#e.ol[14])
 // Have Parachute with no ripcord.
-return this.#t+="There is no way to open the parachute!\n",this.#t+="You hit the ground.\n",this.#t+="You have broken your neck!\n\n",this.#t+="You are dead.",this.#o(this.#t,MiserJS.MiserJSEngine.#A.DIED);if(-1!=this.#e.ol[27])return this.#t+="You hit the ground.\n",this.#t+="You have broken your neck!\n\n",this.#t+="You are dead.",this.#o(this.#t,MiserJS.MiserJSEngine.#A.DIED);if(
+return this.#t+="There is no way to open the parachute!\n",this.#t+="You hit the ground.\n",this.#t+="You have broken your neck!\n\n",this.#t+="You are dead.",this.#o(this.#t,MiserJSEngine.#A.DIED);if(-1!=this.#e.ol[27])return this.#t+="You hit the ground.\n",this.#t+="You have broken your neck!\n\n",this.#t+="You are dead.",this.#o(this.#t,MiserJSEngine.#A.DIED);if(
 // Have fully functional parachute.
 this.#t+="You yank the ripcord and the\n'chute comes billowing out.\n",32==this.#e.cp)
 // At rear balcony, so change current position to HEDGE MAZE (40)
-return this.#e.cp=40,this.#x();if(29==this.#e.cp)return this.#t+="You land safely.\n\nCongratulations on escaping!\n",this.#e.es=!0,this.#o(this.#t,MiserJS.MiserJSEngine.#A.ESCAPED);default:return this.#t+="There's nowhere to jump.",this.#o(this.#t)}}
+return this.#e.cp=40,this.#x();if(29==this.#e.cp)return this.#t+="You land safely.\n\nCongratulations on escaping!\n",this.#e.es=!0,this.#o(this.#t,MiserJSEngine.#A.ESCAPED);default:return this.#t+="There's nowhere to jump.",this.#o(this.#t)}}
 /**
   * CASE 28: Swim.  
   * Lines 24000 to 24030 in the original Miser program from 1981.  
@@ -567,11 +565,11 @@ this.#e.ol[17]=0,this.#o("I'm no expert, but I think it'll work.\n")):this.#N();
 /**
    * 
    * @returns {MiserResponse|null}
-   */#H(){return 4!=this.#e.cp||this.#e.ch?null:this.#e.ps?this.#o("The snake bites you!\nYou are dead.\n",MiserJS.MiserJSEngine.#A.DIED):(this.#e.ps=!0,this.#o("The snake is about to attack!\n"))}
+   */#H(){return 4!=this.#e.cp||this.#e.ch?null:this.#e.ps?this.#o("The snake bites you!\nYou are dead.\n",MiserJSEngine.#A.DIED):(this.#e.ps=!0,this.#o("The snake is about to attack!\n"))}
 /**
    * Call this method after player dies or escapes, to get the final score and rank.
    * @returns {MiserResponse}
-   */showFinalOutcome(){this.#t=`\nYou accumulated ${this.#e.gt} treasures, \n for a score of ${20*this.#e.gt} points.\n(100 Possible)\n`;let t=this.#e.gt;return this.#e.es?t++:this.#t+="\nHowever, you did not escape.\n",this.#t+=`\nThis puts you in a class of:\n${MiserJS.MiserJSEngine.#$[t]}\n`,6!=t&&(this.#t+="\nBetter luck next time!\n"),this.#o(this.#t,!0)}
+   */showFinalOutcome(){this.#t=`\nYou accumulated ${this.#e.gt} treasures, \n for a score of ${20*this.#e.gt} points.\n(100 Possible)\n`;let t=this.#e.gt;return this.#e.es?t++:this.#t+="\nHowever, you did not escape.\n",this.#t+=`\nThis puts you in a class of:\n${MiserJSEngine.#$[t]}\n`,6!=t&&(this.#t+="\nBetter luck next time!\n"),this.#o(this.#t,!0)}
 /**
    * Creates new output arguments.
    * @param {string} outputText String to return.
@@ -587,19 +585,19 @@ this.#e.ol[17]=0,this.#o("I'm no expert, but I think it'll work.\n")):this.#N();
 /*
     This can be done more efficiently in most languages, but this is how
     it's done in the original 1981 program at Line 810.
-    */;for(let e=1;e<MiserJS.MiserJSEngine.#z.length;e++)if(t===MiserJS.MiserJSEngine.#z[e])
+    */;for(let e=1;e<MiserJSEngine.#z.length;e++)if(t===MiserJSEngine.#z[e])
 // Match. Return array index into the verbs array.
 return e;return 0}
 /**
    * @param {string} s 
    * @returns {number} Index into objects[] array, or 0 if not found.
-   */#p(t){(t=t.toLowerCase()).length>4&&(t=t.substring(0,4));for(let e=1;e<MiserJS.MiserJSEngine.#F.length;e++)if(t===MiserJS.MiserJSEngine.#F[e])
+   */#p(t){(t=t.toLowerCase()).length>4&&(t=t.substring(0,4));for(let e=1;e<MiserJSEngine.#F.length;e++)if(t===MiserJSEngine.#F[e])
 // Match. Return array index into the objects array.
 return e;return 0}
 /**
    * Returns one of "What?" or "I don't understand that."
    * @returns {MiserResponse}
-   */#u(){return this.#t+=`${MiserJS.MiserJSEngine.#L[this.#e.em]}\n`,
+   */#u(){return this.#t+=`${MiserJSEngine.#L[this.#e.em]}\n`,
 // Alternate between hString[1] and hString[2].
 this.#e.em=3-this.#e.em,this.#o(this.#t)}
 /**
@@ -628,7 +626,7 @@ this.#e.em=3-this.#e.em,this.#o(this.#t)}
    * Get a more concise name for the current room/location listed in the rString[] array.
    * @param {number} cp Current position from a MiserState object.
    * @returns {string}
-   */getCurrentPositionShortName(t){return MiserJS.MiserJSEngine.#W[t]}
+   */getCurrentPositionShortName(t){return MiserJSEngine.#W[t]}
 /**
    * 
    * @param {MiserState} miserState 

@@ -2,6 +2,12 @@
   "name": "miserjs",
   "version": "1.0.0",
   "description": "JavaScript port of Mary Jean Winter's Miser text adventure game. She programmed the game in Commodore PET BASIC, and it was first released in 1981 as part of CURSOR's cassette-based magazine.",
+  "keywords": [
+    "text adventure",
+    "game engine",
+    "miser",
+    "commodore"
+  ],
   "license": "MIT",
   "author": "Kristina Ragan",
   "repository": {
@@ -9,7 +15,7 @@
     "url": "git+https://github.com/KristinaRC/MiserJS.git"
   },
   "type": "module",
-  "exports": "./dist/node/miserjs-engine.min.js",
+  "exports": "./dist/engine/miserjs-engine.min.js",
   "engines": {
     "node": ">=24.0.0",
     "npm": ">=12.0.2"
@@ -20,7 +26,9 @@
   "scripts": {
     "start": "node dist/node/miserjs-node.min.js",
     "miserjs": "node dist/node/miserjs-node.min.js",
-    "build": "node scripts/build"
+    "build": "node scripts/build",
+    "build-test-data": "node scripts/build-test-data",
+    "test": "node --test \"test/*.test.js\""
   },
   "devDependencies": {
     "picocolors": "^1.1.1",

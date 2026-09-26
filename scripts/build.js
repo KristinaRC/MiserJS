@@ -33,30 +33,30 @@ const textFileExtensions = [...sourceFileExtensions, '.txt']
 
 let buildError = false;
 
+// Like 'make clean': Delete the dist directory.
+let distDeleteDir = `${packageDistPath}`;
+if (fs.existsSync(distDeleteDir)) {
+  fs.rmSync(distDeleteDir, { recursive: true });
+  console.log(pc.bgRed(pc.white('Package Dist Path Directory was deleted.')));
+} else {
+  console.log(pc.bgRed(pc.white('Package dist directory did not exist to be deleted.')));
+}
+
+
 // Build all targets.
-for (const buildTarget of targets) {
+for (const buildTarget of /**@type {BuildTarget[]}*/ (targets)) {
   console.time('BuildTargetTime');
-  let logBuildTargetName = pc.bgBlue(pc.black(`${buildTarget.name.toUpperCase()}: `));
+  let logBuildTargetName = `${pc.bgBlue(pc.black(`${buildTarget.name.toUpperCase()}:`))} `;
   console.log(`\n${'-'.repeat(buildTarget.description.length)}\n${pc.bgBlue(pc.white('Build Target:'))} ${logBuildTargetName}\n${buildTarget.description}\n${'-'.repeat(buildTarget.description.length)}`);
   let buildTargetDistPathBaseDir = `${packageDistPath}/${buildTarget.name}`;
   console.log(`Target Dist Path Base Dir: ${buildTargetDistPathBaseDir}`);
-  /** RegExp to strip the absolute base path from an individual file distPath */
-  let buildTargetDistPathBaseMatchRegex = RegExp(String.raw`${packageDistPath}/${buildTarget.name}/`);
-
-
-  let distDeleteDir = `${buildTargetDistPathBaseDir}`;
-  if (fs.existsSync(distDeleteDir)) {
-    fs.rmSync(distDeleteDir, { recursive: true });
-    console.log(pc.bgRed(pc.white('Package Dist Path Directory was deleted.')));
-  } else {
-    console.log(pc.bgRed(pc.white('Package dist directory did not exist to be deleted.')));
-  }
-  
+      
   let unmodifiedFiles = [];
 
-  // Every src file in a build target will need to be copied to dist.
-  // Some src files will need their source code changed to reference the 
-  // updated filepaths and possibly the filename as well.
+  /* Every src file in a build target will need to be copied to dist.
+   * Some src files will need their source code changed to reference the 
+   * updated filepaths and possibly the filename as well.
+   */
 
   // Update all file distPaths first.
   for ( const file of buildTarget.files) {
@@ -95,7 +95,7 @@ for (const buildTarget of targets) {
       continue;
     }
 
-    console.group(pc.bgYellow(pc.black(`Working on file:'${file.srcPath}':`)));
+    console.group(`${pc.bgYellow(pc.black('Working on file:'))} ${file.srcPath}:`);
     console.log('');
     
     /**@type {string | Buffer | undefined} */
@@ -114,19 +114,8 @@ for (const buildTarget of targets) {
       srcFinal = fs.readFileSync(file.srcPath, { encoding: 'binary' });
     }
 
-    // Todo: This is a temporary hack. 
-    if ( buildTarget.name == 'browser' &&  path.basename(file.srcPath) == 'miserjs-engine.js') {
-      console.group(pc.green('Special Browser build generation:'));
-      // Modify source text in some way.
-      // Change MiserEngine to MiserJS.MiserEngine for the browser code.
-      srcFinal  = srcFinal.replaceAll(/MiserEngine/gs, 'MiserJS.MiserEngine');
-      srcFinal = srcFinal.replace(/^.*export default class MiserJS.MiserEngine/m, '// @ts-nocheck\nwindow.MiserJS = window.MiserJS || {};\n\nMiserJS.MiserEngine = class ');
-      sourceScan = false;
-      console.groupEnd();
-    }
-
     if (buildTarget.name == 'node' && path.basename(file.srcPath) == 'miserjs-node.js') {
-      console.group(pc.green('Special Node build generation:'));
+      console.group(pc.inverse('Special Node build generation:'));
       // Modify source text in some way.
       // Strip line: /** @import {MiserState, MiserResponse} from './miserjs-engine.min.js' */
       srcFinal = srcFinal.replace(/^.*\/\*\*.*@import.*?\*\/$/m, '');
@@ -140,7 +129,7 @@ for (const buildTarget of targets) {
       // Now scan sourceFileText for possible file references
       // to any of the existing buildTarget.files.
 
-      console.group(`${logBuildTargetName}${pc.bgGreen(pc.bold(pc.black(`Source Scan:'${file.srcPath}':`)))}`);
+      console.group(`${logBuildTargetName}${pc.bgGreen(pc.bold(pc.black('Source Scan:')))} ${file.srcPath}:\n`);
       
       let sourceFileText = srcFinal;
       /** Source file directory in distPath. */
@@ -223,10 +212,13 @@ for (const buildTarget of targets) {
                     break;
                   case 'relativewithdots':
                     if (!relativePath) {
+                      // RelativePath is empty for From/To in current directory.
                       relativePath = './' + fileRefDistName;
                     } else {
-                      // relativePath is '..' here.
-                      relativePath += '/' + replacePath;
+                      // relativePath is '..' here if only going up to parent directory.
+                      // It will be ../{directory name} if going up to a subdirectory of the parent.
+                      // From /miser/file.js to /miser/engine/fileref.js = ../engine/fileref.js 
+                      relativePath += '/' + fileRefDistName;
                     }
 
                     modifiedFilename = relativePath;
@@ -258,7 +250,7 @@ for (const buildTarget of targets) {
           console.log(String.raw`Found  : ${match[0]}`);
           console.log(`Match  : ${logMatchModifier} ${match[1]}`);
           let replacedLine = match[0].replace(new RegExp(String.raw`${match[1]}`), `${modifiedFilename}`);
-          console.log(`${pc.bgGreen(pc.black('Replace:'))} ${replacedLine}`);
+          console.log(`${pc.bgGreen(pc.black('Replace:'))} ${replacedLine}\n`);
           console.groupEnd();
 
           // The sourceFileText may be modified if many different file references are found in it.
@@ -276,7 +268,7 @@ for (const buildTarget of targets) {
         srcFinal = modifiedSourceFile;
       } else {
         srcFinal = sourceFileText;
-        console.log('No file references found.');
+        console.log('No file references found.\n');
 
       }
       console.groupEnd(); // Source Scan
@@ -291,23 +283,54 @@ for (const buildTarget of targets) {
           console.log(`${logBuildTargetName}${pc.bgGreen(pc.bold(pc.black(`Minifying JavaScript file: ${filename}`)))}`);
           try {
             srcFinal = await jsMinify(filename, srcFinal);
-          } catch ( /**@type {any}*/ e) {
+            console.log('\tSuccess.\n');
+          } catch ( /**@type {any}*/ error) {
             buildError = true;
-            console.log(`JS Minify error in ${filename}.\n${e.toString()}`);
+            console.error(`Minify Error in: ${file.srcPath}\nTerser reported an error at Line ${error.line}, Column ${error.col}.\nMessage: ${error.message}`);
             exit(1);
           }
           break;
       }
     }
 
+    if (buildError) {
+      console.log('\n\nBUILD ERROR.\nNo files copied to the server directory.');
+      exit(1);
+    }
+
+    /* 
+     * Todo: This is a temporary hack. 
+     * This is for a version of the engine to be used in the browser via the local file system.
+     * Browsers do not allow loading of modules from the local file system.
+     *  (i.e., "import MiserJSEngine from './miserjs-engine.mjs").
+     * Have to do this after minify this because terser will throw an error with the dot used in the class name.
+     */
+
+    if (buildTarget.name == 'browser' && path.basename(file.distPath).match(/miserjs-engine.+\.js/)) {
+      console.group(pc.green('Special Browser build generation:'));
+      // Modify source text in some way.
+      // Change MiserJSEngine to MiserJS.MiserJSEngine for the browser code.
+      srcFinal = /**@type {string}*/ (srcFinal).replaceAll(/MiserJSEngine/gs, 'MiserJS.MiserJSEngine');
+      srcFinal = srcFinal.replace(/^.*export default class MiserJS\.MiserJSEngine/m, 'window.MiserJS = window.MiserJS || {};\n\nMiserJS.MiserJSEngine = class ');
+      sourceScan = false;
+      console.groupEnd();
+    }
+
     if (file.compress) {
-      /**
-       *  Do not update file.distPath. 
+      /*
+       * Do not update file.distPath. 
+       * 
        * The file is either the original or minified (above).  
        * The webserver will select the compressed file based on the extension.  
-       * This is for 'brotli_static on' and 'gzip_static on' directives, so the webserver doesn't  
+       * 
+       * This is for 'brotli_static on' and 'gzip_static on' directives in Nginx (Apache has equivalents), so the webserver doesn't  
        * have to waste CPU time compressing these files over and over with every response.
-       * Can copy br and gz files with their unique extensions (br,gz) to the dist directory in this function.  
+       * 
+       * Every *.min.css and *.min.js file on the server must have .br and .gz versions in the same directory for the
+       * static directive to work properly.
+       * This significantly reduces load on the server, because the server does not have to compress the file each time it is requested.
+       * 
+       * Can copy br and gz files with their unique extensions (.br,.gz) to the dist directory in this function.  
        */
       console.log(`${logBuildTargetName}${pc.bgGreen(pc.bold(pc.black(`Compressing ${srcFiletype} file: ${path.basename(file.distPath)}`)))}`);
       compressSource(srcFinal, srcFiletype, file.distPath);
@@ -336,10 +359,7 @@ for (const buildTarget of targets) {
   console.timeEnd('BuildTargetTime');
 }
 
-if (buildError) {
-  console.log('\n\nBUILD ERROR.\nNo files copied to the server directory.');
-  exit(1);
-}
+
 
 console.groupEnd();
 
@@ -391,10 +411,17 @@ async function jsMinify(filename, source) {
 
   const terserOptions = {
     module: true,
+    keep_classnames: true,
     compress: {
       defaults: true,
     },
-    mangle: { module: true },
+    mangle: { 
+      module: true,
+      keep_classnames: true
+    },
+    format: {
+      comments: true
+    },
     sourceMap: false
   };
   
@@ -402,8 +429,8 @@ async function jsMinify(filename, source) {
     terserResult = await terserMinify(source, terserOptions);
     return terserResult.code;
   } catch (/**@type {any}*/ error) {
-    console.error(error.toString());
-    throw new Error(`Terser reported an error in ${filename}.`);
+    throw error; 
+    
   }
 }
 
@@ -467,15 +494,15 @@ function compressSource(source, sourceType, absOutputFilepath) {
  * @property {SpecialCaseMatch[]|boolean} specialCaseMatches
  * @property {boolean} minify
  * @property {boolean} compress
- * @property {boolean} pwaCache
+ * @property {boolean} [pwaCache]
  */
 
 /**
- * @typedef {Object} Build_Target
+ * @typedef {Object} BuildTarget
  * @property {string} name
  * @property {string} description
- * @property {string|boolean} domainRoot
- * @property {string|boolean} baseHref
- * @property {boolean} isPWA
+ * @property {string} [domainRoot] This is for file URLs such as OpenGraph social images.
+ * @property {string} [baseHref] If the page has a base href, declare it here.
+ * @property {boolean} [isPWA]
  * @property {TargetFile[]} files
  */

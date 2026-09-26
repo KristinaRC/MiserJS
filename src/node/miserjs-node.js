@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { open, writeFile } from 'node:fs/promises';
 
-import MiserEngine from '../engine/miserjs-engine.js';
+import MiserJSEngine from '../engine/miserjs-engine.js';
 
 /** @import {MiserState, MiserResponse} from '../engine/miserjs-engine.js' */
 
@@ -14,13 +14,13 @@ class MiserJS {
 	/** @type {string} */
 	#SAVEGAME_FILENAME = "miserjs-savegame.txt";
 
-	/** @type {MiserEngine} */
-	#miserEngine;
+	/** @type {MiserJSEngine} */
+	#miserJSEngine;
 	/** @type {readline.Interface} */
 	#rl;
 
 	constructor() {
-		this.#miserEngine = new MiserEngine();
+		this.#miserJSEngine = new MiserJSEngine();
 	}
 
 	async play() {
@@ -42,12 +42,12 @@ class MiserJS {
 		let response;
 		switch (input) {
 			case 'save':
-				await writeFile(this.#SAVEGAME_FILENAME, JSON.stringify(this.#miserEngine.getGameState(), null, 4), 'utf8');
+				await writeFile(this.#SAVEGAME_FILENAME, JSON.stringify(this.#miserJSEngine.getGameState(), null, 4), 'utf8');
 				console.log('Game saved.\n');
 				break;
 			case 'load':
 				let jsonData = readFileSync(this.#SAVEGAME_FILENAME, 'utf8');
-				this.#miserEngine.setGameState(JSON.parse(jsonData));
+				this.#miserJSEngine.setGameState(JSON.parse(jsonData));
 				console.log('Game restored.');
 				response = this.#request('look');
 				console.log(response.text);
@@ -62,13 +62,13 @@ class MiserJS {
 							this.#rl.close();
 							break;
 						case 'quit':
-							response = this.#miserEngine.showFinalOutcome();
+							response = this.#miserJSEngine.showFinalOutcome();
 							console.log(`\n${response.text}\n`);
 							this.#rl.close();
 							break;
 						case 'escaped':
 							console.log(`\n${response.text}\n`);
-							response = this.#miserEngine.showFinalOutcome();
+							response = this.#miserJSEngine.showFinalOutcome();
 							this.#rl.close();
 							break;
 					}
@@ -89,11 +89,11 @@ class MiserJS {
 	 * @returns {MiserResponse}
 	 */
 	#request(input) {
-		return this.#miserEngine.request(input);
+		return this.#miserJSEngine.request(input);
 	}
 
 	static async speedrun() {
-		const miserEngine = new MiserEngine();
+		const miserJSEngine = new MiserJSEngine();
 		const __dirname = import.meta.dirname;
 		let text;
 
@@ -111,7 +111,7 @@ class MiserJS {
 		for (const command of playerInput) {
 			console.log(`>> ${command}`);
 			await outputFile.write(`\n>> ${command}\n`, null, 'utf8');
-			text = miserEngine.request(command).text;
+			text = miserJSEngine.request(command).text;
 			console.log(text);
 			await outputFile.write(text, null, 'utf8');
 		}
