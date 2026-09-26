@@ -26,8 +26,7 @@
   "scripts": {
     "start": "node dist/node/miserjs-node.min.js",
     "miserjs": "node dist/node/miserjs-node.min.js",
-    "build": "node scripts/build",
-    "build-test-data": "node scripts/build-test-data",
+    "build": "node scripts/build.js",
     "test": "node --test \"test/*.test.js\""
   },
   "devDependencies": {
