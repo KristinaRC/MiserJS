@@ -8,28 +8,33 @@
     "miser",
     "commodore pet"
   ],
+  "homepage": "https://github.com/KristinaRC/MiserJS#readme",
+  "bugs": {
+    "url": "https://github.com/KristinaRC/MiserJS/issues",
+    "email": "github@ragancomputing.com"
+  },
   "license": "MIT",
-  "author": "Kristina Ragan",
+  "author": "Kristina Ragan <github@ragancomputing.com> (https://www.ragancomputing.com/)",
+  "files": [
+    "dist"
+  ],
+  "exports": "./dist/engine/miserjs-engine.min.js",
+  "type": "module",
+  "bin": "dist/node/miserjs-node.min.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/KristinaRC/MiserJS.git"
   },
   "packageManager": "npm@12.0.2+sha1.b888cc9a9ff34a8b023ff47b784692396635397b",
-  "type": "module",
-  "bin": "dist/node/miserjs-node.min.js",
-  "exports": "./dist/engine/miserjs-engine.min.js",
-  "engines": {
-    "node": ">=24.0.0",
-    "npm": ">=12.0.2"
-  },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "start": "node dist/node/miserjs-node.min.js",
     "miserjs": "node dist/node/miserjs-node.min.js",
     "build": "node scripts/build.js",
     "test": "node --test \"test/*.test.js\""
+  },
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=12.0.2"
   },
   "devDependencies": {
     "picocolors": "^1.1.1",
