@@ -16,6 +16,7 @@
   },
   "packageManager": "npm@12.0.2+sha1.b888cc9a9ff34a8b023ff47b784692396635397b",
   "type": "module",
+  "bin": "dist/node/miserjs-node.min.js",
   "exports": "./dist/engine/miserjs-engine.min.js",
   "engines": {
     "node": ">=24.0.0",
