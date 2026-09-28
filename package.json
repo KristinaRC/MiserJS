@@ -1,6 +1,6 @@
 {
   "name": "miserjs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "JavaScript port of Mary Jean Winter's Miser text adventure game, originally released in 1981 for the Commodore PET series of computers.",
   "keywords": [
     "text adventure",
