@@ -28,7 +28,20 @@ This allows for saving that object as a JSON string to anywhere that can accept 
 
 The game can be resumed later by providing the previously saved MiserState object to setGameState().
 
-The ```dist/browser``` directory contains the engine for use in a web browser.  
+The ```dist/browser``` directory contains 2 engines for use in a web browser:  
+
+1. **miserjs-engine-1.0.0.min.js**: Use this for working locally on your front-end code without a webserver.  
+    Browser security restricts loading of local files with 'import', so I use a custom namespace here to get around that. 
+2. **miserjs-engine-1.0.0.min.mjs**: Use this for regular 'import' module syntax with this file coming from a webserver.  
+    The '.mjs' extension may not be registered as a valid media type (text/javascript) on the webserver, so change this to '.js' if you get an error.  
+    (For Nginx, in the ```http``` context, usually loaded via ```include mime.types;```.)
+    ```
+    types {
+      text/javascript js mjs;
+    }
+    ```
+
+
 There is a build script provided, ```npm run build``` that will minify and compress the plain miserjs-engine.js file in the ```src``` directory, placing the output in the ```dist/browser``` directory.
 
 Brotli and Gzip compressed files are provided for use with brotli_static and gzip_static directives on the server, so the server doesn't have to re-compress on every request.  
@@ -39,19 +52,25 @@ Run the build script after modifying the src files.
 
 ## Using the MiserEngine in your own front-end  
 
-### For Node.js:
+### For Node.js 24.x and above:
+
+1. ```cd``` to your front-end project directory, where you ran ```npm init```.
+2. ```npm install miserjs```
+
+(Type ```npx miserjs``` to play the game using the locally installed (project dir only) binary. )
+
 ```
-import MiserEngine from './miserjs-engine.js';
+import MiserJSEngine from 'miserjs';
 // Next is a JSDoc import statement for the object typedefs defined in MiserEngine.
 // These will show the object properties and descriptions in your
 // JavaScript IDE. (VS Code, WebStorm, Atom, etc.)
-/** @import {MiserState, MiserResponse} from './miserjs-engine.js' */
+/** @import {MiserState, MiserResponse} from 'miserjs' */
 
 // Start a new game.
 // MiserEngine constructor can also take a previously saved MiserState object.  
-let miserEngine = new MiserEngine();
+let miserJSEngine = new MiserJSEngine();
 
-let response = miserEngine.request('look');
+let response = miserJSEngine.request('look');
 
 // response will have a MiserResponse object with   
 // output text from the Miser 'look' verb/command.
@@ -69,7 +88,7 @@ console.log(response.text);
 // Get input line string from player.
 
 // Send the input line string.
-response = miserEngine.request(input);
+response = miserJSEngine.request(input);
 
 // Print the response text.
 console.log(response.text)
@@ -85,10 +104,10 @@ write it to a local file.
 
 [Install Node.js](https://nodejs.org)  
 
-1. [Download repo as zip file.](https://github.com/KristinaRC/MiserJS/archive/refs/heads/main.zip)
-2. Extract the zip file.
-3. cd MiserJS-main
-3. node dist/node/miserjs-node
+In a terminal or PowerShell:
+```npm install --global miserjs```
+
+Then simply type: ```miserjs```
 
 You're now playing the game as it was on the PET back in 1981.
 
@@ -103,7 +122,7 @@ Type `score` to see current points and rank.
 
 ### Speed Run
 
-You can also run `node dist/node/miserjs-node speedrun`.
+You can also run `miserjs speedrun`.
 
 This will speedrun the game using commands from  
 the file ```speedrun-commands.txt```.
@@ -130,7 +149,7 @@ Obviously, ***Mary Jean Winter***, the original author of Miser, which was relea
 
 ***There is no person named M.J. Lansing that is associated with this game!***
 
-See the Wiki here for an explanation of how that name was mistakenly used in the source code of the original program.  
+[See the Wiki](https://github.com/KristinaRC/MiserJS/wiki#the-history-of-miser) here for an explanation of how that name was mistakenly used in the source code of the original program.  
 (**TLDR:** She was a Mathematics Professor at a college located in East Lansing, Michigan.)
 
 I used the solution files found at The Classic Adventures Solution Archive  
@@ -147,4 +166,5 @@ for the speedrun-commands.txt file.
 **Rene van Hasselaar** ported the 1983 Commodore 64 BASIC version of Miser to MS-DOS in 1999.  
 **John Rumpelein** ported Miser to PHP in 2013. [(Link to his page about it.)](https://rumpelein.com/miser-text-adventure/)  
 **Michael J. Fromberger**, [creachadair here on GitHub](https://github.com/creachadair/miser), ported Miser to [Chipmunk BASIC](https://www.nicholson.com/rhn/basic/) in 2018, so he could run it on his Macintosh.  
-**Kelly Hall**, [grumble1965 here on GitHub](https://github.com/grumble1965/PythonMiser), ported Miser to Python in 2021.
+**Kelly Hall**, [grumble1965 here on GitHub](https://github.com/grumble1965/PythonMiser), ported Miser to Python in 2021.  
+**robertorenz**, [here on Github](https://github.com/robertorenz/MiserRemake), created a '2.5D Remake' of Miser in 2026. Click the link to play it in your browser.
