@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict';
 import readline from 'node:readline/promises';
 import { stdin as input, stdout as output, argv, exit } from 'node:process';
