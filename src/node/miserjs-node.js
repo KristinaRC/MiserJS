@@ -43,7 +43,7 @@ class MiserJS {
 		let response;
 		switch (input) {
 			case 'save':
-				await writeFile(this.#SAVEGAME_FILENAME, JSON.stringify(this.#miserJSEngine.getGameState(), null, 4), 'utf8');
+				await writeFile(this.#SAVEGAME_FILENAME, JSON.stringify(this.#miserJSEngine.getGameState()), 'utf8');
 				console.log('Game saved.\n');
 				break;
 			case 'load':
@@ -70,6 +70,7 @@ class MiserJS {
 						case 'escaped':
 							console.log(`\n${response.text}\n`);
 							response = this.#miserJSEngine.showFinalOutcome();
+              console.log(`\n${response.text}\n`);
 							this.#rl.close();
 							break;
 					}
@@ -82,7 +83,6 @@ class MiserJS {
 				}
 		}
 	}
-
 
 	/**
 	 * Send player input to MiserEngine.

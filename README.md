@@ -57,14 +57,10 @@ Run the build script after modifying the src files.
 1. ```cd``` to your front-end project directory, where you ran ```npm init```.
 2. ```npm install miserjs```
 
-(Type ```npx miserjs``` to play the game using the locally installed (project dir only) binary. )
+(Type ```npx miserjs``` to play the game using the locally installed binary.)
 
 ```
 import MiserJSEngine from 'miserjs';
-// Next is a JSDoc import statement for the object typedefs defined in MiserEngine.
-// These will show the object properties and descriptions in your
-// JavaScript IDE. (VS Code, WebStorm, Atom, etc.)
-/** @import {MiserState, MiserResponse} from 'miserjs' */
 
 // Start a new game.
 // MiserEngine constructor can also take a previously saved MiserState object.  
@@ -94,11 +90,16 @@ response = miserJSEngine.request(input);
 console.log(response.text)
 ```
 
-In the simple front-end provided here - `miserjs-node.js` - I added  
-`save` and `load` commands, which are not part of `miserjs-engine.js` .
+A front-end example/starting-point is provided in    
+```src/node/miserjs-node.js``` .
 
-All that does is JSON.stringify the MiserState object and
-write it to a local file.
+I added `save` and `load` commands that show how easy it is  
+to save game progress to a local text file.
+
+All that does is JSON.stringify() the MiserState object and
+write/read it to/from a plain text file. 
+
+The savegame file size is only around 1,000 (one thousand) bytes, in JSON form without whitespace.
 
 ## Play Locally in Node.js
 
