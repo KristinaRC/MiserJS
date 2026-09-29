@@ -2,8 +2,8 @@
 [![Clean Install, Build, Running All Tests](https://github.com/KristinaRC/MiserJS/actions/workflows/ci_build_test.yml/badge.svg)](https://github.com/KristinaRC/MiserJS/actions/workflows/ci_build_test.yml)
 
 ## Play Online
-![Screenshot of the MiserJS title screen.](https://github.com/user-attachments/assets/cf6ec7c3-139c-4568-8f7b-84a4031c7ad8 "Screenshot from MiserJS running in a web browser.")  
-***( Screenshots from MiserJS running in a web browser. )***
+![Screenshot of the MiserJS title screen.](https://github.com/user-attachments/assets/dc5998d6-aa97-4b09-81a6-ec02d5c1d320 "Video capture and screenshots from MiserJS running in a web browser.")  
+***( Video capture and screenshots from MiserJS running in a web browser. )***
 
 This is a JavaScript port of the Miser text adventure game that was originally released in 1981 for the Commodore PET series of computers.
 
