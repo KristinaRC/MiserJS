@@ -6,9 +6,10 @@
         "checkJs": true,
         "noImplicitAny": true,
         "noCheck": false,
-        "strictPropertyInitialization": false
+        "strictPropertyInitialization": false,
+        
     },
     "exclude": [
-        "**/*.min*"
+        "node_modules"
     ]
 }

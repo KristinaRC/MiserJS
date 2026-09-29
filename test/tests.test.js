@@ -22,6 +22,6 @@ test('Can escape.', (t) => {
   const testDataMap = JSON.parse(testData);
 
   for ( const [command, responseText] of testDataMap ) {
-    assert.strictEqual(miserEngine.request(command).text, responseText, `'${command}' did not return the expected reponse text.`);
+    assert.strictEqual(miserEngine.request(command).text, responseText, `'${command}' did not return the expected response text.`);
   }
 });

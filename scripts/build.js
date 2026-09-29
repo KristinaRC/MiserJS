@@ -359,8 +359,6 @@ for (const buildTarget of /**@type {BuildTarget[]}*/ (targets)) {
   console.timeEnd('BuildTargetTime');
 }
 
-
-
 console.groupEnd();
 
 console.log('\n');
@@ -411,18 +409,15 @@ async function jsMinify(filename, source) {
 
   const terserOptions = {
     module: true,
+    toplevel: false,
     keep_classnames: true,
+    sourceMap: false,
     compress: {
       defaults: true,
     },
     mangle: { 
-      module: true,
-      keep_classnames: true
-    },
-    format: {
-      comments: true
-    },
-    sourceMap: false
+      module: true
+    }
   };
   
   try {
