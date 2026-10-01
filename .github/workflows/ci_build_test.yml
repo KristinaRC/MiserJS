@@ -2,6 +2,11 @@
 # cache/restore them, build the source code, and run tests across Node.js 24.x and 26.x
 # See: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
+# Dependabot alerts do not work with actions SHA pinning!
+# "For GitHub Actions, alerts are only generated for actions that use semantic versioning, not SHA versioning."
+# https://docs.github.com/en/code-security/concepts/supply-chain-security/dependabot-alerts#detection-of-insecure-dependencies
+
+
 name: Clean Install, Build, Run All Tests
 
 on:
@@ -9,6 +14,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         node-version: [24, 26]

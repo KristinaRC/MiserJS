@@ -1,7 +1,7 @@
 # Publish workflow.
 # Npmjs setup: https://docs.npmjs.com/trusted-publishers
 
-name: Publish
+name: NPM Publish
 
 on:
   workflow_dispatch:

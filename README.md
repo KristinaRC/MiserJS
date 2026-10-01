@@ -1,5 +1,8 @@
 # MiserJS
 [![Clean Install, Build, Running All Tests](https://github.com/KristinaRC/MiserJS/actions/workflows/ci_build_test.yml/badge.svg)](https://github.com/KristinaRC/MiserJS/actions/workflows/ci_build_test.yml)
+[![CodeQL](https://github.com/KristinaRC/MiserJS/actions/workflows/codeql.yml/badge.svg)](https://github.com/KristinaRC/MiserJS/actions/workflows/codeql.yml)
+[![NPM Publish](https://github.com/KristinaRC/MiserJS/actions/workflows/publish.yml/badge.svg)](https://github.com/KristinaRC/MiserJS/actions/workflows/publish.yml)
+
 
 ## Play Online
 ![Screenshot of the MiserJS title screen.](https://github.com/user-attachments/assets/b737ba3e-36eb-4a39-bd37-66803c08e587 "Video capture and screenshots from MiserJS running in a web browser.")  
