@@ -172,3 +172,11 @@ for the speedrun-commands.txt file.
 **Michael J. Fromberger**, [creachadair here on GitHub](https://github.com/creachadair/miser), ported Miser to [Chipmunk BASIC](https://www.nicholson.com/rhn/basic/) in 2018, so he could run it on his Macintosh.  
 **Kelly Hall**, [grumble1965 here on GitHub](https://github.com/grumble1965/PythonMiser), ported Miser to Python in 2021.  
 **robertorenz**, [here on Github](https://github.com/robertorenz/MiserRemake), created a '2.5D Remake' of Miser in 2026. Click the link to play it in your browser.
+
+## Special Mentions
+
+A review of Miser, from [Renga in Blue](https://bluerenga.blog/2020/03/04/miser-1981/) , which includes information about the CURSOR newsletter subscription service that ran from July  1978 to May 1982. This is where Miser was first released in August 1981.
+
+That site is also a great source for fans of interactive fiction in general.
+
+[Myles Skinner has a great page](https://tierceron.com/commodore/cursor/intro.php) about CURSOR tapes 1 through 24, with a link to the full set (1-30) of disk images that can be loaded into the [VICE Pet emulator](https://vice-emu.sourceforge.io) on a PC.
