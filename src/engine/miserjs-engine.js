@@ -256,9 +256,7 @@ export default class MiserJSEngine {
       this.#miserState.ol[20] = 0;
       this.#outputText += "You find a door key!\n";
     }
-
     return this.#response(this.#outputText);
-
   }
 
   /**
@@ -1871,16 +1869,17 @@ export default class MiserJSEngine {
       19
     ],
 
-    // This entire array is being saved in MiserState.
-    // Most of this array is static data, but 3 rooms are modified in the original source code.
-    // rPercent[5][3] gets modified. (Red-walled room. East becomes 46, to go into vault. )
-    // rPercent[8][1] gets modified. (Trophy room. North becomes 17, to go to Game Room. )
-    // rPercent[21][3] gets modified. (Ballroom. East becomes 22, to go to Chapel.)
-    //
-    // I thought someone might want to add additional floors, rooms, or portals that would require
-    // updating even more of these arrays, so I'm treating them all as dynamic/changing/must-save for now.
-    //
-    rPercent: [
+    /*
+     * This entire array - rPercent - is being saved in MiserState.
+     * Most of this array is static data, but 3 rooms are modified in the original source code.
+     * rPercent[5][3] gets modified. (Red-walled room. East becomes 46, to go into vault. )
+     * rPercent[8][1] gets modified. (Trophy room. North becomes 17, to go to Game Room. )
+     * rPercent[21][3] gets modified. (Ballroom. East becomes 22, to go to Chapel.)
+     *
+     * I thought someone might want to add additional floors, rooms, or portals that would require
+     * updating even more of these arrays, so I'm treating them all as dynamic/changing/must-save for now.
+     */
+     rPercent: [
       [0, 1, 0, 0, 0],
       [0, 2, 0, 0, 12],
       [0, 3, 1, 0, 0],

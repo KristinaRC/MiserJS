@@ -36,12 +36,12 @@ class MiserJS {
 	}
 
 	/**
-	 * 
+	 * Event listener that gets called with a line of input from the console.
 	 * @param {string} input 
 	 */
 	async #processReadline(input) {
 		let response;
-		switch (input) {
+    switch (input.trim()) {
 			case 'save':
 				await writeFile(this.#SAVEGAME_FILENAME, JSON.stringify(this.#miserJSEngine.getGameState()), 'utf8');
 				console.log('Game saved.\n');
@@ -85,7 +85,7 @@ class MiserJS {
 	}
 
 	/**
-	 * Send player input to MiserEngine.
+	 * Send player input to MiserEngine and get response.
 	 * @param {string} input
 	 * @returns {MiserResponse}
 	 */
