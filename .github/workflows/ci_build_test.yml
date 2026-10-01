@@ -7,7 +7,7 @@
 # https://docs.github.com/en/code-security/concepts/supply-chain-security/dependabot-alerts#detection-of-insecure-dependencies
 
 
-name: Clean Install, Build, Run All Tests
+name: "Clean Install, Build, Run All Tests"
 
 on:
   workflow_dispatch:
