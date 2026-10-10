@@ -1,14 +1,11 @@
 #!/usr/bin/env node
-'use strict';
 import readline from 'node:readline/promises';
 import { stdin as input, stdout as output, argv, exit } from 'node:process';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { open, writeFile } from 'node:fs/promises';
-
-import MiserJSEngine from '../engine/miserjs-engine.js';
-
-/** @import {MiserState, MiserResponse} from '../engine/miserjs-engine.js' */
+import MiserJSEngine from '../engine/miserjs-engine.mjs';
+/** @import {MiserResponse} from '../engine/miserjs-engine.mjs' */
 
 class MiserJS {
 
@@ -58,16 +55,16 @@ class MiserJS {
 				response = this.#request(input);
 				if (response.gameOver) {
 					switch (response.gameOver) {
-						case 'died':
+						case MiserJSEngine.GameOverReason.DIED:
 							console.log(response.text);
 							this.#rl.close();
 							break;
-						case 'quit':
+            case MiserJSEngine.GameOverReason.QUIT:
 							response = this.#miserJSEngine.showFinalOutcome();
 							console.log(`\n${response.text}\n`);
 							this.#rl.close();
 							break;
-						case 'escaped':
+						case MiserJSEngine.GameOverReason.ESCAPED:
 							console.log(`\n${response.text}\n`);
 							response = this.#miserJSEngine.showFinalOutcome();
               console.log(`\n${response.text}\n`);

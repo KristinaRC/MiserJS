@@ -4,18 +4,11 @@
     "description": "MiserJS Engine for running in the browser.",
     "files": [
       {
-        "srcPath": "src/engine/miserjs-engine.js",
+        "srcPath": "src/engine/miserjs-engine.mjs",
         "distPath": "dist/browser/miserjs-engine-{version}.mjs",
         "specialCaseMatches": false,
-        "minify": true,
-        "compress": true
-      },
-      {
-        "srcPath": "src/engine/miserjs-engine.js",
-        "distPath": "dist/browser/miserjs-engine-{version}.js",
-        "specialCaseMatches": false,
-        "minify": true,
-        "compress": true
+        "minify": false,
+        "compress": false
       }
     ]
   },
@@ -27,19 +20,19 @@
         "srcPath": "src/node/miserjs-node.js",
         "distPath": "dist/node/miserjs-node.js",
         "specialCaseMatches": false,
-        "minify": true,
+        "minify": false,
         "compress": false
       },
       {
-        "srcPath": "src/engine/miserjs-engine.js",
-        "distPath": "dist/engine/miserjs-engine.js",
+        "srcPath": "src/engine/miserjs-engine.mjs",
+        "distPath": "dist/engine/miserjs-engine.mjs",
         "specialCaseMatches": [
           {
             "regex": "import.+?from",
             "basePathReplaceType": "relativeWithDots"
           }
         ],
-        "minify": true,
+        "minify": false,
         "compress": false
       },
       {

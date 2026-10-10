@@ -1,6 +1,6 @@
 {
   "name": "miserjs",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "JavaScript port of Mary Jean Winter's Miser text adventure game, originally released in 1981 for the Commodore PET series of computers.",
   "keywords": [
     "text adventure",
@@ -18,23 +18,27 @@
   "files": [
     "dist"
   ],
-  "exports": "./dist/engine/miserjs-engine.min.js",
+  "exports": "./dist/engine/miserjs-engine.mjs",
+  "browser": "./dist/browser/miserjs-engine-1.1.0.mjs",
   "type": "module",
-  "bin": "dist/node/miserjs-node.min.js",
+  "bin": {
+    "miserjs": "dist/node/miserjs-node.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/KristinaRC/MiserJS.git"
   },
-  "packageManager": "npm@12.0.2+sha1.b888cc9a9ff34a8b023ff47b784692396635397b",
+  "packageManager": "npm@12.2.0+sha1.c276cadf785c1018d82dd287fe7742567055efb9",
   "scripts": {
-    "start": "node dist/node/miserjs-node.min.js",
-    "miserjs": "node dist/node/miserjs-node.min.js",
-    "build": "node scripts/build.js",
-    "test": "node --test \"test/*.test.js\""
+    "start": "node dist/node/miserjs-node.js",
+    "miserjs": "node dist/node/miserjs-node.js",
+    "build": "node scripts/build",
+    "test": "node --test \"test/*.test.js\"",
+    "publish-clean": "node scripts/publish-clean"
   },
   "engines": {
     "node": ">=24.0.0",
-    "npm": ">=12.0.2"
+    "npm": ">=12.2.0"
   },
   "devDependencies": {
     "picocolors": "^1.1.1",

@@ -85,7 +85,7 @@ let speedRunCommands = [
   'go staircase', // Middle of Western Hallway.
   'e', // Master Bedroom.
   'e', // Middle of East Hallway.
-  'e', // East Bedrooom.
+  'e', // East Bedroom.
   'n', // Closet.
   'get parachute',
   'fix parachute',

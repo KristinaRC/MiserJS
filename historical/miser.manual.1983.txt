@@ -2,9 +2,9 @@ MISER
 
 By Mary Jean Winter 
 
-Rumor has it that there's a lot of valuable trea- 
-sure in the house where the old miser used to 
-live. Think of it â€” all that treasure lying 
+Rumor has it that there's a lot of valuable treasure
+ in the house where the old miser used to 
+live. Think of it as all that treasure lying 
 around waiting to be claimed. Surely it's worth trying 
 to find! 
 
@@ -17,11 +17,11 @@ gone in after the rumored "treasure," but few have
 come out again. 
 
 Once the program starts, give it one- or two-word 
-commands, such as NORTH, or SHOOT AARD- 
-VARK. (As there are no guns or aardvarks in the 
+commands, such as NORTH, or SHOOT AARDVARK.
+(As there are no guns or aardvarks in the 
 house, we're not giving anything away.) Some other 
-useful commands: INVEN tells you what you're car- 
-rying; SCORE tells you your current score; LOOK 
+useful commands: INVEN tells you what you're
+carrying; SCORE tells you your current score; LOOK 
 describes the room you're in; and QUIT ends the 
 game. 
 

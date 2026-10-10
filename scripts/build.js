@@ -1,17 +1,41 @@
 'use strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import zlib from 'node:zlib';
-import {exit} from 'node:process';
-import pc from 'picocolors';
+import { argv, exit } from 'node:process';
+import { execFileSync } from 'node:child_process';
 import { minify as terserMinify } from 'terser';
+import zlib from 'node:zlib';
 import targets from '../config/build-targets.json' with { type: 'json' };
 import packageJSON from '../package.json' with { type: 'json' };
+import pc from 'picocolors';
 
-const __dirname = import.meta.dirname;
-const packageVersion = packageJSON.version;
+process.on('uncaughtException', (err) => {
+  console.log(`ERROR: ${err.message}`);
+  exit(1);
+});
+
+// Update version if provided on the command-line.
+
+const newVersion = argv[2]?.trim();
+
+let packageVersion = null;
+
+if (newVersion) {
+  const versionRegex = new RegExp(String.raw`^\d{1,2}.\d{1,2}.\d{1,2}(?:-rc.\d)?$`);
+  if (!versionRegex.test(newVersion)) {
+    const message = `Bad semantic version:\nYou entered: ${newVersion}`;
+    throw new Error(message);
+  }
+  packageVersion = newVersion;
+} else {
+  packageVersion = packageJSON.version;
+}
+
+console.log(`\nUsing version number: ${packageVersion}`);
 
 // Define paths.
+
+const __dirname = import.meta.dirname;
 
 const sourceBaseDir = 'src';
 const distBaseDir = 'dist';
@@ -114,15 +138,6 @@ for (const buildTarget of /**@type {BuildTarget[]}*/ (targets)) {
       srcFinal = fs.readFileSync(file.srcPath, { encoding: 'binary' });
     }
 
-    if (buildTarget.name == 'node' && path.basename(file.srcPath) == 'miserjs-node.js') {
-      console.group(pc.inverse('Special Node build generation:'));
-      // Modify source text in some way.
-      // Strip line: /** @import {MiserState, MiserResponse} from './miserjs-engine.min.js' */
-      srcFinal = srcFinal.replace(/^.*\/\*\*.*@import.*?\*\/$/m, '');
-      sourceScan = true;
-      console.groupEnd();
-    }
-
     if (sourceScan) {
       // Update source code files to reference new filepath and possibly a new filename.
       // New filename can come from a version number update and/or minification.
@@ -136,6 +151,23 @@ for (const buildTarget of /**@type {BuildTarget[]}*/ (targets)) {
       let sourceFileDir = path.dirname(file.distPath);
 
       let modifiedSourceFile = '';
+
+      // Do straight replacements here.
+      if (file.replacements && Array.isArray(file.replacements)) {
+        console.group(pc.inverse('Straight Replace:'));
+        for (const replacement of file.replacements) {
+          console.log(`Regex: ${replacement.regex}`);
+          console.log(`ReplaceWith: ${replacement.replaceWith}`);
+          let lineMatchRegex = new RegExp(replacement.regex, replacement.flags);
+          if (!modifiedSourceFile) {
+            modifiedSourceFile = sourceFileText.replaceAll(lineMatchRegex, replacement.replaceWith);
+          } else {
+            modifiedSourceFile = modifiedSourceFile.replaceAll(lineMatchRegex, replacement.replaceWith);
+          }
+        }
+        console.groupEnd();
+      }
+
 
       for (const fileRef of buildTarget.files) {
         /**
@@ -303,18 +335,18 @@ for (const buildTarget of /**@type {BuildTarget[]}*/ (targets)) {
      * This is for a version of the engine to be used in the browser via the local file system.
      * Browsers do not allow loading of modules from the local file system.
      *  (i.e., "import MiserJSEngine from './miserjs-engine.mjs").
-     * Have to do this after minify this because terser will throw an error with the dot used in the class name.
+     * Have to do this after minify because terser will throw an error with the dot used in the class name.
      */
 
-    if (buildTarget.name == 'browser' && path.basename(file.distPath).match(/miserjs-engine.+\.js/)) {
-      console.group(pc.green('Special Browser build generation:'));
-      // Modify source text in some way.
-      // Change MiserJSEngine to MiserJS.MiserJSEngine for the browser code.
-      srcFinal = /**@type {string}*/ (srcFinal).replaceAll(/MiserJSEngine/gs, 'MiserJS.MiserJSEngine');
-      srcFinal = srcFinal.replace(/^.*export default class MiserJS\.MiserJSEngine/m, 'window.MiserJS = window.MiserJS || {};\n\nMiserJS.MiserJSEngine = class ');
-      sourceScan = false;
-      console.groupEnd();
-    }
+    // if (buildTarget.name == 'browser' && path.basename(file.distPath).match(/miserjs-engine.+\.js/)) {
+    //   console.group(pc.green('Special Browser build generation:'));
+    //   // Modify source text in some way.
+    //   // Change MiserJSEngine to MiserJS.MiserJSEngine for the browser code.
+    //   srcFinal = /**@type {string}*/ (srcFinal).replaceAll(/MiserJSEngine/g, 'MiserJS.MiserJSEngine');
+    //   srcFinal = srcFinal.replace(/^.*export default class MiserJS\.MiserJSEngine/m, 'window.MiserJS = window.MiserJS || {};\n\nMiserJS.MiserJSEngine = class ');
+    //   sourceScan = false;
+    //   console.groupEnd();
+    // }
 
     if (file.compress) {
       /*
@@ -344,7 +376,6 @@ for (const buildTarget of /**@type {BuildTarget[]}*/ (targets)) {
     
     console.groupEnd(); // After a buildTarget file has been fully processed.
   }
-
   
   if (unmodifiedFiles.length > 0) {
     console.group(pc.bgBlue(pc.white('Files copied directly to dist directory:')));
@@ -359,11 +390,27 @@ for (const buildTarget of /**@type {BuildTarget[]}*/ (targets)) {
   console.timeEnd('BuildTargetTime');
 }
 
-console.groupEnd();
+/*
+ * Update package.json and package-lock.json.
+ */
 
-console.log('\n');
+packageJSON.version = packageVersion;
+packageJSON.browser = `./dist/browser/miserjs-engine-${packageVersion}.mjs`;
+
+// Write the modified package.json
+fs.writeFileSync(path.join(packageRootPath, 'package.json'), JSON.stringify(packageJSON,null,2), { mode: 0o644, flush: true});
+
+// Create fresh package-lock.json 
+const npmUpdateResult = execFileSync('npm', ['update', '--save'], {
+  cwd: packageRootPath,
+  stdio: 'pipe',
+  encoding: 'utf8'
+});
+
+console.log(`NPM Update Command Result: ${npmUpdateResult}`);
+
 console.log(pc.bgGreenBright(pc.black(pc.bold("Build success!"))));
-console.log('\n');
+
 exit(0);
 
 /**
@@ -409,15 +456,13 @@ async function jsMinify(filename, source) {
 
   const terserOptions = {
     module: true,
-    toplevel: false,
-    keep_classnames: true,
-    sourceMap: false,
     compress: {
       defaults: true,
     },
     mangle: { 
-      module: true
-    }
+      module: true,
+    },
+    sourceMap: false
   };
   
   try {
@@ -425,7 +470,6 @@ async function jsMinify(filename, source) {
     return terserResult.code;
   } catch (/**@type {any}*/ error) {
     throw error; 
-    
   }
 }
 
@@ -483,13 +527,21 @@ function compressSource(source, sourceType, absOutputFilepath) {
  */
 
 /** 
+ * @typedef {Object} Replacement
+ * @property {string} regex Regular expression to match a special source code line.
+ * @property {string} flags Regular expression flags.
+ * @property {string} replaceWith
+ */
+
+/** 
  * @typedef {Object} TargetFile
  * @property {string} srcPath Absolute
  * @property {string} distPath Path to final destination in the dist directory.
+ * @property {Replacement[]} [replacements]
  * @property {SpecialCaseMatch[]|boolean} specialCaseMatches
  * @property {boolean} minify
  * @property {boolean} compress
- * @property {boolean} [pwaCache]
+ * @property {boolean} pwaCache
  */
 
 /**

@@ -1,1 +1,2 @@
+# Special For GitHub, so 'Languages' on the repo homepage doesn't show CSharp code files. 
 **/*.cs -linguist-detectable

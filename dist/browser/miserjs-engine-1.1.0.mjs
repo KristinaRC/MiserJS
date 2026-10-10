@@ -40,14 +40,15 @@ export default class MiserJSEngine {
   /**
    * If the input is greater than #INPUT_STRING_LIMIT characters, trim it.  
    * Change this if you add new commands or object names that would exceed this length.
+   * This is plenty for a 2 or 3 word player input.
    * @type {number} To limit how much of the input string is subject to the tokenizer. */
   static #INPUT_STRING_LIMIT = 40;
 
   /**
    * 
-   * @param {MiserState|null} miserState 
+   * @param {MiserState} [miserState]
    */
-  constructor(miserState = null) {
+  constructor(miserState) {
 
     if (!miserState) {
       // Start new game.
@@ -513,14 +514,12 @@ export default class MiserJSEngine {
    * Lines 7000-7150 in the original Miser program from 1981.  
    *   
    * Special actions for quit should be for the host program to decide.  
-   * The host could use the method, this.#showFinalOutcome or combine it with a  
+   * The host could use the method **```MiserJSEngine.showFinalOutcome()```** or combine it with a  
    * score display, or something else.
    * @returns {MiserResponse}
    */
   #quit() {
-    // Take special action for quit in the host program.
-    // The host could use the method, this.showFinalOutcome, or combine it with a score display, or something else.
-    return this.#response(this.#outputText, MiserJSEngine.#GameOverReason.QUIT);
+    return this.#response(this.#outputText, MiserJSEngine.GameOverReason.QUIT);
   }
 
   /**
@@ -532,8 +531,8 @@ export default class MiserJSEngine {
   #drop(j) {
     // Preservation of bug in original code
     if (this.#miserState.pt[j] == -1) {
-      this.#outputText += "\n?ILLEGAL QUANTITY ERROR IN  8000\n\n";
-      this.#outputText += "----------------------------------------";
+      this.#outputText += "\n?ILLEGAL QUANTITY ERROR IN  8000\n";
+      this.#outputText += "--------------------------------------\n";
       this.#outputText += "** You have encountered a bug that\n";
       this.#outputText += "existed in the original Miser program\n";
       this.#outputText += "from 1981. **\n\n";
@@ -1062,7 +1061,7 @@ export default class MiserJSEngine {
     if (this.#miserState.cp == 10 && this.#miserState.fb) {
       this.#outputText += "You have burnt to a crisp!\n";
 
-      return this.#response(this.#outputText, MiserJSEngine.#GameOverReason.DIED);
+      return this.#response(this.#outputText, MiserJSEngine.GameOverReason.DIED);
     }
 
     const snakeAction = this.#checkSnake();
@@ -1167,7 +1166,7 @@ export default class MiserJSEngine {
         this.#outputText += "You jump...\n";
         if (this.#miserState.jm) {
           this.#outputText += "Now you've done it. You ignored\nmy warning, and as a result\nyou have broken your neck!\n\nYou are dead.";
-          return this.#response(this.#outputText, MiserJSEngine.#GameOverReason.DIED);
+          return this.#response(this.#outputText, MiserJSEngine.GameOverReason.DIED);
         }
         else {
           this.#miserState.jm = true;
@@ -1190,7 +1189,7 @@ export default class MiserJSEngine {
           this.#outputText += "You hit the ground.\n";
           this.#outputText += "You have broken your neck!\n\n";
           this.#outputText += "You are dead.";
-          return this.#response(this.#outputText, MiserJSEngine.#GameOverReason.DIED);
+          return this.#response(this.#outputText, MiserJSEngine.GameOverReason.DIED);
         } else if (this.#miserState.ol[27] == -1) {
           // Have fully functional parachute.
           this.#outputText += "You yank the ripcord and the\n'chute comes billowing out.\n";
@@ -1201,14 +1200,14 @@ export default class MiserJSEngine {
           } else if (this.#miserState.cp == 29) {
             this.#outputText += "You land safely.\n\nCongratulations on escaping!\n";
             this.#miserState.es = true;
-            return this.#response(this.#outputText, MiserJSEngine.#GameOverReason.ESCAPED);
+            return this.#response(this.#outputText, MiserJSEngine.GameOverReason.ESCAPED);
           }
         }
         else {
           this.#outputText += "You hit the ground.\n";
           this.#outputText += "You have broken your neck!\n\n";
           this.#outputText += "You are dead.";
-          return this.#response(this.#outputText, MiserJSEngine.#GameOverReason.DIED);
+          return this.#response(this.#outputText, MiserJSEngine.GameOverReason.DIED);
         }
       default:
         this.#outputText += "There's nowhere to jump.";
@@ -1298,7 +1297,7 @@ export default class MiserJSEngine {
         this.#miserState.ps = true;
         return this.#response("The snake is about to attack!\n");
       } else {
-        return this.#response("The snake bites you!\nYou are dead.\n", MiserJSEngine.#GameOverReason.DIED);
+        return this.#response("The snake bites you!\nYou are dead.\n", MiserJSEngine.GameOverReason.DIED);
       }
     } else {
       return null;
@@ -1750,7 +1749,11 @@ export default class MiserJSEngine {
     "Swimming Pool"
   ];
 
-  static #GameOverReason = Object.freeze({
+  /**
+   * Sent back as a value of ```MiserResponse.gameOver```.
+   * @enum {string}
+   */
+  static GameOverReason = Object.freeze({
     DIED: 'died',
     ESCAPED: 'escaped',
     QUIT: 'quit'
@@ -1957,15 +1960,9 @@ export default class MiserJSEngine {
  * @property {Array<number[]>} rPercent Rooms map - N S E W. (new int[49,5])
  */
 
-/** @typedef {Object} GameOverReason
- * @property {string} DIED
- * @property {string} ESCAPED
- * @property {string} QUIT
- */
-
 /**
- * @typedef {Object} MiserResponse
- * @property {string} text Text that will be displayed to the player.
- * @property {boolean|string} gameOver One of 'died', 'escaped', quit', or false.
- * @property {boolean|string} isError Error text.
- */
+   * @typedef {Object} MiserResponse
+   * @property {string} text Text that will be displayed to the player.
+   * @property {boolean|GameOverReason} gameOver One of 'died', 'escaped', quit', or false.
+   * @property {boolean} isError Error text will be in text property.
+   */

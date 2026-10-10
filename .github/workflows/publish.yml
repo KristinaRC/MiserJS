@@ -18,7 +18,10 @@ jobs:
         node-version: '24.x'
         registry-url: 'https://registry.npmjs.org'
         package-manager-cache: false # Disable automatic npm dependency caching to reduce cache poisoning risk.
-    - run: npm ci
-    - run: npm run build
-    - run: npm test
-    - run: npm stage publish --access public
+    - run: |
+        npm ci
+        npm run build
+        npm test
+        npm run publish-clean
+        cd publishTemp
+        npm stage publish --access public      

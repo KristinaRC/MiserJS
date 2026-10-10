@@ -31,28 +31,6 @@ This allows for saving that object as a JSON string to anywhere that can accept 
 
 The game can be resumed later by providing the previously saved MiserState object to setGameState().
 
-The ```dist/browser``` directory contains 2 engines for use in a web browser:  
-
-1. **miserjs-engine-1.0.0.min.js**: Use this for working locally on your front-end code without a webserver.  
-    Browser security restricts loading of local files with 'import', so I use a custom namespace here to get around that. 
-2. **miserjs-engine-1.0.0.min.mjs**: Use this for regular 'import' module syntax with this file coming from a webserver.  
-    The '.mjs' extension may not be registered as a valid media type (text/javascript) on the webserver, so change this to '.js' if you get an error.  
-    (For Nginx, in the ```http``` context, usually loaded via ```include mime.types;```.)
-    ```
-    types {
-      text/javascript js mjs;
-    }
-    ```
-
-
-There is a build script provided, ```npm run build``` that will minify and compress the plain miserjs-engine.js file in the ```src``` directory, placing the output in the ```dist/browser``` directory.
-
-Brotli and Gzip compressed files are provided for use with brotli_static and gzip_static directives on the server, so the server doesn't have to re-compress on every request.  
-* For Apache 2.4: [See doc here.](https://httpd.apache.org/docs/2.4/mod/mod_deflate.html#precompressed)
-* For Nginx: [See doc here.](https://github.com/google/ngx_brotli) 
-
-Run the build script after modifying the src files.
-
 ## Using the MiserEngine in your own front-end  
 
 ### For Node.js 24.x and above:
@@ -104,14 +82,34 @@ write/read it to/from a plain text file.
 
 The savegame file size is only around 1,000 (one thousand) bytes, in JSON form without whitespace.
 
+### For a web browser:
+
+The ```dist/browser``` directory contains the engine for use in a web browser:  
+**```miserjs-engine-{version}.mjs```**  
+
+That's the file you should copy to your web server public html directory.  
+
+Put the following inside the HTML page <head></head> section, before your own front-end script that will import the engine:  
+```<script defer src="miserjs-engine-{version}.mjs" type="module"></script>```  
+(Your front-end script should also use 'defer' in the script tag, to be loaded after the engine, with both loading in parallel with the page load.)
+
+In your front-end JavaScript code:
+```import MiserJSEngine from "miserjs";```
+
+Run the build script after modifying the engine src file, to generate a new set of dist files:  
+```npm run build```
+
 ## Play Locally in Node.js
+
+If you just want to play the game locally, in a terminal/console/PowerShell window:
 
 [Install Node.js](https://nodejs.org)  
 
-In a terminal or PowerShell:
+In a terminal or PowerShell:  
 ```npm install --global miserjs```
 
-Then simply type: ```miserjs```
+Then simply type:  
+```miserjs```
 
 You're now playing the game as it was on the PET back in 1981.
 
@@ -156,6 +154,10 @@ Obviously, ***Mary Jean Winter***, the original author of Miser, which was relea
 [See the Wiki](https://github.com/KristinaRC/MiserJS/wiki#the-history-of-miser) here for an explanation of how that name was mistakenly used in the source code of the original program.  
 (**TLDR:** She was a Mathematics Professor at a college located in East Lansing, Michigan.)
 
+***Andy Stadler***  
+***Brian Sawyer*** (The Code Works, Cursor #27)  
+***Glen Fisher*** (The Code Works, Cursor #27)
+
 I used the solution files found at The Classic Adventures Solution Archive  
 for the speedrun-commands.txt file.
 
@@ -175,8 +177,8 @@ for the speedrun-commands.txt file.
 
 ## Special Mentions
 
-A review of Miser, from [Renga in Blue](https://bluerenga.blog/2020/03/04/miser-1981/) , which includes information about the CURSOR newsletter subscription service that ran from July  1978 to May 1982. This is where Miser was first released in August 1981.
+A review of Miser, from [Renga in Blue](https://bluerenga.blog/2020/03/04/miser-1981/) , which includes information about the CURSOR newsletter subscription service that ran from July 1978 to May 1982. Cursor #27 is where Miser was first released in August 1981.
 
-That site is also a great source for fans of interactive fiction in general.
+That site is also a great source for fans of interactive fiction in general, especially the early years.
 
 [Myles Skinner has a great page](https://tierceron.com/commodore/cursor/intro.php) about CURSOR tapes 1 through 24, with a link to the full set (1-30) of disk images that can be loaded into the [VICE Pet emulator](https://vice-emu.sourceforge.io) on a PC.
